@@ -1,16 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, ScrollView, StyleSheet, TouchableOpacity, Alert, KeyboardAvoidingView, Platform } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import type { RouteProp } from '@react-navigation/native';
 import { GradeSystem, RouteType } from '../types';
-import { insertRoute } from '../database/routeRepository';
+import { insertRoute, updateRoute, getRouteById } from '../database/routeRepository';
 import { StarRating } from '../components/StarRating';
 import { GradePicker } from '../components/GradePicker';
 import { PhotoPicker } from '../components/PhotoPicker';
 import { RouteTypePicker } from '../components/RouteTypePicker';
 import { LocationPicker } from '../components/LocationPicker';
+import type { RootStackParamList } from '../navigation/AppNavigator';
 
 export function AddRouteScreen() {
   const navigation = useNavigation();
+  const route = useRoute<RouteProp<RootStackParamList, 'AddRoute'>>();
+  const editId = route.params?.routeId;
+  const isEditing = !!editId;
+
   const [name, setName] = useState('');
   const [gradeSystem, setGradeSystem] = useState<GradeSystem>('French');
   const [grade, setGrade] = useState('');
@@ -21,6 +27,25 @@ export function AddRouteScreen() {
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
   const [saving, setSaving] = useState(false);
+  const [loaded, setLoaded] = useState(!isEditing);
+
+  useEffect(() => {
+    if (!editId) return;
+    getRouteById(editId).then((r) => {
+      if (r) {
+        setName(r.name);
+        setGradeSystem(r.grade_system);
+        setGrade(r.grade);
+        setType(r.type);
+        setDescription(r.description);
+        setRating(r.rating);
+        setPhotoUri(r.photo_uri);
+        setLatitude(r.latitude);
+        setLongitude(r.longitude);
+      }
+      setLoaded(true);
+    });
+  }, [editId]);
 
   const handleSave = async () => {
     if (!name.trim()) {
@@ -29,18 +54,32 @@ export function AddRouteScreen() {
     }
     setSaving(true);
     try {
-      await insertRoute({
-        name: name.trim(),
-        grade,
-        grade_system: gradeSystem,
-        type,
-        description: description.trim(),
-        rating,
-        latitude,
-        longitude,
-        sector_id: null,
-        photo_uri: photoUri,
-      });
+      if (isEditing) {
+        await updateRoute(editId, {
+          name: name.trim(),
+          grade,
+          grade_system: gradeSystem,
+          type,
+          description: description.trim(),
+          rating,
+          latitude,
+          longitude,
+          photo_uri: photoUri,
+        });
+      } else {
+        await insertRoute({
+          name: name.trim(),
+          grade,
+          grade_system: gradeSystem,
+          type,
+          description: description.trim(),
+          rating,
+          latitude,
+          longitude,
+          sector_id: null,
+          photo_uri: photoUri,
+        });
+      }
       navigation.goBack();
     } catch (error) {
       console.error('Save route error:', error);
@@ -49,6 +88,14 @@ export function AddRouteScreen() {
       setSaving(false);
     }
   };
+
+  if (!loaded) {
+    return (
+      <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+        <Text style={{ fontSize: 16, color: '#999' }}>Načítání...</Text>
+      </View>
+    );
+  }
 
   return (
     <KeyboardAvoidingView
@@ -112,7 +159,7 @@ export function AddRouteScreen() {
           disabled={saving}
         >
           <Text style={styles.saveButtonText}>
-            {saving ? 'Ukládám...' : 'Uložit cestu'}
+            {saving ? 'Ukládám...' : isEditing ? 'Uložit změny' : 'Uložit cestu'}
           </Text>
         </TouchableOpacity>
       </ScrollView>

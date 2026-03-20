@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { View, Text, Image, ScrollView, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useRoute, useNavigation, useFocusEffect } from '@react-navigation/native';
 import type { RouteProp } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ClimbingRoute } from '../types';
 import { getRouteById, deleteRoute } from '../database/routeRepository';
 import { StarRating } from '../components/StarRating';
@@ -16,7 +17,7 @@ const TYPE_LABELS: Record<string, string> = {
 
 export function RouteDetailScreen() {
   const { params } = useRoute<RouteProp<RootStackParamList, 'RouteDetail'>>();
-  const navigation = useNavigation();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [route, setRoute] = useState<ClimbingRoute | null>(null);
 
   useFocusEffect(
@@ -89,6 +90,13 @@ export function RouteDetailScreen() {
         </Text>
       </View>
 
+      <TouchableOpacity
+        style={styles.editButton}
+        onPress={() => navigation.navigate('AddRoute', { routeId: route.id })}
+      >
+        <Text style={styles.editButtonText}>Upravit cestu</Text>
+      </TouchableOpacity>
+
       <TouchableOpacity style={styles.deleteButton} onPress={handleDelete}>
         <Text style={styles.deleteButtonText}>Smazat cestu</Text>
       </TouchableOpacity>
@@ -125,8 +133,13 @@ const styles = StyleSheet.create({
   description: { fontSize: 15, lineHeight: 22, color: '#444' },
   coords: { fontSize: 14, color: '#2d5a27', fontFamily: 'monospace' },
   info: { fontSize: 14, color: '#666', marginBottom: 4 },
-  deleteButton: {
+  editButton: {
     marginHorizontal: 16, marginTop: 24, paddingVertical: 14,
+    backgroundColor: '#2d5a27', borderRadius: 12, alignItems: 'center',
+  },
+  editButtonText: { color: '#fff', fontSize: 16, fontWeight: '700' },
+  deleteButton: {
+    marginHorizontal: 16, marginTop: 12, paddingVertical: 14,
     backgroundColor: '#e74c3c', borderRadius: 12, alignItems: 'center',
   },
   deleteButtonText: { color: '#fff', fontSize: 16, fontWeight: '700' },

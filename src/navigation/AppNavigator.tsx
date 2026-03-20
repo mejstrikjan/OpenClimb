@@ -12,7 +12,7 @@ import { ProfileScreen } from '../screens/ProfileScreen';
 
 export type RootStackParamList = {
   MainTabs: undefined;
-  AddRoute: undefined;
+  AddRoute: { routeId?: string } | undefined;
   RouteDetail: { routeId: string };
 };
 
@@ -64,7 +64,13 @@ export function AppNavigator() {
         }}
       >
         <Stack.Screen name="MainTabs" component={MainTabs} options={{ headerShown: false }} />
-        <Stack.Screen name="AddRoute" component={AddRouteScreen} options={{ title: 'Nová cesta' }} />
+        <Stack.Screen
+          name="AddRoute"
+          component={AddRouteScreen}
+          options={({ route }) => ({
+            title: route.params?.routeId ? 'Upravit cestu' : 'Nová cesta',
+          })}
+        />
         <Stack.Screen name="RouteDetail" component={RouteDetailScreen} options={{ title: 'Detail cesty' }} />
       </Stack.Navigator>
     </NavigationContainer>
