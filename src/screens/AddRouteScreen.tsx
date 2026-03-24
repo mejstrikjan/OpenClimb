@@ -9,6 +9,7 @@ import { GradePicker } from '../components/GradePicker';
 import { PhotoPicker } from '../components/PhotoPicker';
 import { RouteTypePicker } from '../components/RouteTypePicker';
 import { LocationPicker } from '../components/LocationPicker';
+import { HierarchyPicker } from '../components/HierarchyPicker';
 import type { RootStackParamList } from '../navigation/AppNavigator';
 
 export function AddRouteScreen() {
@@ -26,6 +27,9 @@ export function AddRouteScreen() {
   const [photoUri, setPhotoUri] = useState<string | null>(null);
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
+  const [areaId, setAreaId] = useState<string | null>(null);
+  const [cragId, setCragId] = useState<string | null>(null);
+  const [sectorId, setSectorId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [loaded, setLoaded] = useState(!isEditing);
 
@@ -42,6 +46,9 @@ export function AddRouteScreen() {
         setPhotoUri(r.photo_uri);
         setLatitude(r.latitude);
         setLongitude(r.longitude);
+        setAreaId(r.area_id);
+        setCragId(r.crag_id);
+        setSectorId(r.sector_id);
       }
       setLoaded(true);
     });
@@ -64,6 +71,9 @@ export function AddRouteScreen() {
           rating,
           latitude,
           longitude,
+          area_id: areaId,
+          crag_id: cragId,
+          sector_id: sectorId,
           photo_uri: photoUri,
         });
       } else {
@@ -76,7 +86,9 @@ export function AddRouteScreen() {
           rating,
           latitude,
           longitude,
-          sector_id: null,
+          area_id: areaId,
+          crag_id: cragId,
+          sector_id: sectorId,
           photo_uri: photoUri,
         });
       }
@@ -139,7 +151,15 @@ export function AddRouteScreen() {
           textAlignVertical="top"
         />
 
-        <Text style={styles.sectionTitle}>Média a lokace</Text>
+        <Text style={styles.sectionTitle}>Lokace</Text>
+        <HierarchyPicker
+          areaId={areaId}
+          cragId={cragId}
+          sectorId={sectorId}
+          onChange={(a, c, s) => { setAreaId(a); setCragId(c); setSectorId(s); }}
+        />
+
+        <Text style={styles.sectionTitle}>Média a GPS</Text>
         <PhotoPicker
           photoUri={photoUri}
           onPhotoSelected={setPhotoUri}

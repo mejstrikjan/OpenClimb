@@ -3,9 +3,14 @@ import { View, Text, Image, ScrollView, StyleSheet, TouchableOpacity, Alert } fr
 import { useRoute, useNavigation, useFocusEffect } from '@react-navigation/native';
 import type { RouteProp } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { ClimbingRoute } from '../types';
+import { ClimbingRoute, Ascent } from '../types';
 import { getRouteById, deleteRoute } from '../database/routeRepository';
+import { getAscentsByRoute, deleteAscent } from '../database/ascentRepository';
+import { getAreaById } from '../database/areaRepository';
+import { getCragById } from '../database/cragRepository';
+import { getSectorById } from '../database/sectorRepository';
 import { StarRating } from '../components/StarRating';
+import { AscentCard } from '../components/AscentCard';
 import type { RootStackParamList } from '../navigation/AppNavigator';
 
 const TYPE_LABELS: Record<string, string> = {
@@ -19,21 +24,63 @@ export function RouteDetailScreen() {
   const { params } = useRoute<RouteProp<RootStackParamList, 'RouteDetail'>>();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [route, setRoute] = useState<ClimbingRoute | null>(null);
+  const [ascents, setAscents] = useState<Ascent[]>([]);
+  const [locationBreadcrumb, setLocationBreadcrumb] = useState('');
 
   useFocusEffect(
     useCallback(() => {
-      getRouteById(params.routeId).then(setRoute);
+      loadRoute();
+      loadAscents();
     }, [params.routeId])
   );
 
+  const loadRoute = async () => {
+    const r = await getRouteById(params.routeId);
+    setRoute(r);
+    if (r) {
+      const parts: string[] = [];
+      if (r.area_id) {
+        const area = await getAreaById(r.area_id);
+        if (area) parts.push(area.name);
+      }
+      if (r.crag_id) {
+        const crag = await getCragById(r.crag_id);
+        if (crag) parts.push(crag.name);
+      }
+      if (r.sector_id) {
+        const sector = await getSectorById(r.sector_id);
+        if (sector) parts.push(sector.name);
+      }
+      setLocationBreadcrumb(parts.join(' > '));
+    }
+  };
+
+  const loadAscents = async () => {
+    const a = await getAscentsByRoute(params.routeId);
+    setAscents(a);
+  };
+
   const handleDelete = () => {
-    Alert.alert('Smazat cestu', 'Opravdu chcete smazat tuto cestu?', [
+    Alert.alert('Smazat cestu', 'Opravdu chcete smazat tuto cestu? Smažou se i všechny záznamy v deníku.', [
       { text: 'Zrušit', style: 'cancel' },
       {
         text: 'Smazat', style: 'destructive',
         onPress: async () => {
           await deleteRoute(params.routeId);
           navigation.goBack();
+        },
+      },
+    ]);
+  };
+
+  const handleDeleteAscent = (ascentId: string) => {
+    Alert.alert('Smazat záznam', 'Opravdu chcete smazat tento záznam?', [
+      { text: 'Zrušit', style: 'cancel' },
+      {
+        text: 'Smazat', style: 'destructive',
+        onPress: async () => {
+          await deleteAscent(ascentId);
+          loadAscents();
         },
       },
     ]);
@@ -65,6 +112,13 @@ export function RouteDetailScreen() {
         <StarRating rating={route.rating} size={22} readonly />
       </View>
 
+      {locationBreadcrumb ? (
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Místo</Text>
+          <Text style={styles.breadcrumb}>📍 {locationBreadcrumb}</Text>
+        </View>
+      ) : null}
+
       {route.description ? (
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Popis</Text>
@@ -74,12 +128,35 @@ export function RouteDetailScreen() {
 
       {route.latitude !== null && route.longitude !== null && (
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Lokace</Text>
+          <Text style={styles.sectionTitle}>GPS</Text>
           <Text style={styles.coords}>
-            📍 {route.latitude.toFixed(6)}, {route.longitude.toFixed(6)}
+            {route.latitude.toFixed(6)}, {route.longitude.toFixed(6)}
           </Text>
         </View>
       )}
+
+      <View style={styles.section}>
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>Deník výstupů ({ascents.length})</Text>
+          <TouchableOpacity
+            style={styles.addAscentBtn}
+            onPress={() => navigation.navigate('AddAscent', { routeId: route.id })}
+          >
+            <Text style={styles.addAscentBtnText}>+ Zaznamenat</Text>
+          </TouchableOpacity>
+        </View>
+        {ascents.length === 0 ? (
+          <Text style={styles.emptyAscents}>Zatím žádné výstupy</Text>
+        ) : (
+          ascents.map((a) => (
+            <AscentCard
+              key={a.id}
+              ascent={a}
+              onDelete={() => handleDeleteAscent(a.id)}
+            />
+          ))
+        )}
+      </View>
 
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Info</Text>
@@ -129,10 +206,20 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff', marginHorizontal: 16, marginTop: 12,
     borderRadius: 12, padding: 16,
   },
-  sectionTitle: { fontSize: 16, fontWeight: '700', color: '#333', marginBottom: 8 },
+  sectionHeader: {
+    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
+    marginBottom: 8,
+  },
+  sectionTitle: { fontSize: 16, fontWeight: '700', color: '#333' },
+  breadcrumb: { fontSize: 15, color: '#2d5a27', fontWeight: '500' },
   description: { fontSize: 15, lineHeight: 22, color: '#444' },
   coords: { fontSize: 14, color: '#2d5a27', fontFamily: 'monospace' },
   info: { fontSize: 14, color: '#666', marginBottom: 4 },
+  addAscentBtn: {
+    backgroundColor: '#2d5a27', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 6,
+  },
+  addAscentBtnText: { color: '#fff', fontSize: 12, fontWeight: '600' },
+  emptyAscents: { fontSize: 14, color: '#bbb', textAlign: 'center', paddingVertical: 12 },
   editButton: {
     marginHorizontal: 16, marginTop: 24, paddingVertical: 14,
     backgroundColor: '#2d5a27', borderRadius: 12, alignItems: 'center',

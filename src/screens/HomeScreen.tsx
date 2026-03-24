@@ -2,20 +2,36 @@ import React, { useState, useCallback } from 'react';
 import { View, Text, FlatList, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { ClimbingRoute } from '../types';
-import { getAllRoutes, searchRoutes } from '../database/routeRepository';
+import { ClimbingRoute, FilterState, SortState } from '../types';
+import { getFilteredRoutes } from '../database/routeRepository';
 import { RouteCard } from '../components/RouteCard';
+import { FilterSortBar } from '../components/FilterSortBar';
 import type { RootStackParamList } from '../navigation/AppNavigator';
+
+const DEFAULT_FILTER: FilterState = {
+  types: [],
+  gradeMin: '',
+  gradeMax: '',
+  gradeSystem: 'French',
+  minRating: 0,
+};
+
+const DEFAULT_SORT: SortState = {
+  field: 'updated_at',
+  direction: 'desc',
+};
 
 export function HomeScreen() {
   const [routes, setRoutes] = useState<ClimbingRoute[]>([]);
   const [search, setSearch] = useState('');
+  const [filter, setFilter] = useState<FilterState>(DEFAULT_FILTER);
+  const [sort, setSort] = useState<SortState>(DEFAULT_SORT);
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   const loadRoutes = useCallback(async () => {
-    const data = search.trim() ? await searchRoutes(search.trim()) : await getAllRoutes();
+    const data = await getFilteredRoutes(search, filter, sort);
     setRoutes(data);
-  }, [search]);
+  }, [search, filter, sort]);
 
   useFocusEffect(
     useCallback(() => {
@@ -30,11 +46,17 @@ export function HomeScreen() {
           style={styles.searchInput}
           placeholder="Hledat cesty..."
           value={search}
-          onChangeText={(text) => setSearch(text)}
+          onChangeText={setSearch}
           onSubmitEditing={loadRoutes}
           returnKeyType="search"
         />
       </View>
+      <FilterSortBar
+        filter={filter}
+        sort={sort}
+        onFilterChange={(f) => setFilter(f)}
+        onSortChange={(s) => setSort(s)}
+      />
       <FlatList
         data={routes}
         keyExtractor={(item) => item.id}
@@ -47,8 +69,8 @@ export function HomeScreen() {
         ListEmptyComponent={
           <View style={styles.empty}>
             <Text style={styles.emptyIcon}>🧗</Text>
-            <Text style={styles.emptyText}>Zatím žádné cesty</Text>
-            <Text style={styles.emptySubtext}>Přidejte první cestu tlačítkem +</Text>
+            <Text style={styles.emptyText}>Žádné cesty</Text>
+            <Text style={styles.emptySubtext}>Přidejte cestu tlačítkem + nebo změňte filtr</Text>
           </View>
         }
         contentContainerStyle={routes.length === 0 ? styles.emptyList : styles.list}
