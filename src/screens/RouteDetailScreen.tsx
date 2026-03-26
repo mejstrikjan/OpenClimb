@@ -11,6 +11,7 @@ import { getCragById } from '../database/cragRepository';
 import { getSectorById } from '../database/sectorRepository';
 import { StarRating } from '../components/StarRating';
 import { AscentCard } from '../components/AscentCard';
+import { MapyWebView } from '../components/MapyWebView';
 import type { RootStackParamList } from '../navigation/AppNavigator';
 
 const TYPE_LABELS: Record<string, string> = {
@@ -26,6 +27,7 @@ export function RouteDetailScreen() {
   const [route, setRoute] = useState<ClimbingRoute | null>(null);
   const [ascents, setAscents] = useState<Ascent[]>([]);
   const [locationBreadcrumb, setLocationBreadcrumb] = useState('');
+  const [areaPreviewUri, setAreaPreviewUri] = useState<string | null>(null);
 
   useFocusEffect(
     useCallback(() => {
@@ -41,7 +43,14 @@ export function RouteDetailScreen() {
       const parts: string[] = [];
       if (r.area_id) {
         const area = await getAreaById(r.area_id);
-        if (area) parts.push(area.name);
+        if (area) {
+          parts.push(area.name);
+          setAreaPreviewUri(area.preview_uri);
+        } else {
+          setAreaPreviewUri(null);
+        }
+      } else {
+        setAreaPreviewUri(null);
       }
       if (r.crag_id) {
         const crag = await getCragById(r.crag_id);
@@ -132,6 +141,35 @@ export function RouteDetailScreen() {
           <Text style={styles.coords}>
             {route.latitude.toFixed(6)}, {route.longitude.toFixed(6)}
           </Text>
+          <View style={styles.routeMapWrap}>
+            <MapyWebView
+              mode="browse"
+              height={220}
+              centerLatitude={route.latitude}
+              centerLongitude={route.longitude}
+              zoom={13}
+              markers={[
+                {
+                  id: route.id,
+                  title: route.name,
+                  latitude: route.latitude,
+                  longitude: route.longitude,
+                  subtitle: TYPE_LABELS[route.type] || route.type,
+                  previewUri: route.photo_uri ?? areaPreviewUri,
+                  emoji:
+                    route.type === 'boulder'
+                      ? '🪨'
+                      : route.type === 'trad'
+                        ? '⛰️'
+                        : route.type === 'indoor'
+                          ? '🏢'
+                          : '🧗',
+                },
+              ]}
+              emptyStateTitle="Chybí Mapy.com API klíč"
+              emptyStateText="Mapový náhled cesty vyžaduje nakonfigurovaný Mapy.com klíč."
+            />
+          </View>
         </View>
       )}
 
@@ -214,6 +252,7 @@ const styles = StyleSheet.create({
   breadcrumb: { fontSize: 15, color: '#2d5a27', fontWeight: '500' },
   description: { fontSize: 15, lineHeight: 22, color: '#444' },
   coords: { fontSize: 14, color: '#2d5a27', fontFamily: 'monospace' },
+  routeMapWrap: { marginTop: 12 },
   info: { fontSize: 14, color: '#666', marginBottom: 4 },
   addAscentBtn: {
     backgroundColor: '#2d5a27', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 6,

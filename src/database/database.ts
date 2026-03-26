@@ -1,7 +1,7 @@
 import * as SQLite from 'expo-sqlite';
 
 const DB_NAME = 'climbing.db';
-const SCHEMA_VERSION = 2;
+const SCHEMA_VERSION = 3;
 
 let db: SQLite.SQLiteDatabase | null = null;
 
@@ -20,6 +20,7 @@ async function initDatabase(database: SQLite.SQLiteDatabase): Promise<void> {
     CREATE TABLE IF NOT EXISTS areas (
       id TEXT PRIMARY KEY,
       name TEXT NOT NULL,
+      preview_uri TEXT,
       latitude REAL,
       longitude REAL,
       created_at TEXT NOT NULL,
@@ -93,4 +94,30 @@ async function initDatabase(database: SQLite.SQLiteDatabase): Promise<void> {
       created_at TEXT NOT NULL
     );
   `);
+
+  await ensureSchemaVersion(database);
+}
+
+async function ensureSchemaVersion(database: SQLite.SQLiteDatabase): Promise<void> {
+  const userVersionRow = await database.getFirstAsync<{ user_version: number }>('PRAGMA user_version');
+  const currentVersion = userVersionRow?.user_version ?? 0;
+
+  if (currentVersion < 3) {
+    await ensureColumn(database, 'areas', 'preview_uri', 'TEXT');
+  }
+
+  await database.execAsync(`PRAGMA user_version = ${SCHEMA_VERSION};`);
+}
+
+async function ensureColumn(
+  database: SQLite.SQLiteDatabase,
+  tableName: string,
+  columnName: string,
+  definition: string
+): Promise<void> {
+  const columns = await database.getAllAsync<{ name: string }>(`PRAGMA table_info(${tableName})`);
+  const columnExists = columns.some((column) => column.name === columnName);
+  if (!columnExists) {
+    await database.execAsync(`ALTER TABLE ${tableName} ADD COLUMN ${columnName} ${definition};`);
+  }
 }

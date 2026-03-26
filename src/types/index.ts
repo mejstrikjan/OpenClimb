@@ -7,6 +7,7 @@ export type AscentStyle = 'flash' | 'redpoint' | 'onsight' | 'project';
 export interface Area {
   id: string;
   name: string;
+  preview_uri: string | null;
   latitude: number | null;
   longitude: number | null;
   created_at: string;

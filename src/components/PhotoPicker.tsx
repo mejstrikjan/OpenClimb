@@ -6,9 +6,27 @@ interface Props {
   photoUri: string | null;
   onPhotoSelected: (uri: string) => void;
   onPhotoRemoved: () => void;
+  output?: 'uri' | 'dataUri';
 }
 
-export function PhotoPicker({ photoUri, onPhotoSelected, onPhotoRemoved }: Props) {
+function resolveSelectedPhoto(
+  asset: ImagePicker.ImagePickerAsset,
+  output: 'uri' | 'dataUri'
+): string {
+  if (output === 'dataUri' && asset.base64) {
+    const mimeType = asset.mimeType ?? 'image/jpeg';
+    return `data:${mimeType};base64,${asset.base64}`;
+  }
+
+  return asset.uri;
+}
+
+export function PhotoPicker({
+  photoUri,
+  onPhotoSelected,
+  onPhotoRemoved,
+  output = 'uri',
+}: Props) {
   const pickFromGallery = async () => {
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!permission.granted) {
@@ -20,9 +38,10 @@ export function PhotoPicker({ photoUri, onPhotoSelected, onPhotoRemoved }: Props
       quality: 0.8,
       allowsEditing: true,
       aspect: [4, 3],
+      base64: output === 'dataUri',
     });
     if (!result.canceled && result.assets[0]) {
-      onPhotoSelected(result.assets[0].uri);
+      onPhotoSelected(resolveSelectedPhoto(result.assets[0], output));
     }
   };
 
@@ -36,9 +55,10 @@ export function PhotoPicker({ photoUri, onPhotoSelected, onPhotoRemoved }: Props
       quality: 0.8,
       allowsEditing: true,
       aspect: [4, 3],
+      base64: output === 'dataUri',
     });
     if (!result.canceled && result.assets[0]) {
-      onPhotoSelected(result.assets[0].uri);
+      onPhotoSelected(resolveSelectedPhoto(result.assets[0], output));
     }
   };
 

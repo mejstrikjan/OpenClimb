@@ -11,10 +11,12 @@ import { MapScreen } from '../screens/MapScreen';
 import { ProfileScreen } from '../screens/ProfileScreen';
 import { LogbookScreen } from '../screens/LogbookScreen';
 import { AddAscentScreen } from '../screens/AddAscentScreen';
+import { AddAreaScreen } from '../screens/AddAreaScreen';
 
 export type RootStackParamList = {
   MainTabs: undefined;
   AddRoute: { routeId?: string } | undefined;
+  AddArea: { areaId?: string } | undefined;
   RouteDetail: { routeId: string };
   AddAscent: { routeId: string; ascentId?: string };
 };
@@ -79,6 +81,13 @@ export function AppNavigator() {
           component={AddRouteScreen}
           options={({ route }) => ({
             title: route.params?.routeId ? 'Upravit cestu' : 'Nová cesta',
+          })}
+        />
+        <Stack.Screen
+          name="AddArea"
+          component={AddAreaScreen}
+          options={({ route }) => ({
+            title: route.params?.areaId ? 'Upravit oblast' : 'Nová oblast',
           })}
         />
         <Stack.Screen name="RouteDetail" component={RouteDetailScreen} options={{ title: 'Detail cesty' }} />

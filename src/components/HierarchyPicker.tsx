@@ -94,7 +94,15 @@ export function HierarchyPicker({ areaId, cragId, sectorId, onChange }: Props) {
     try {
       if (modalLevel === 'area') {
         const id = await insertArea({ name: newName.trim() });
-        const area: Area = { id, name: newName.trim(), latitude: null, longitude: null, created_at: '', synced: false };
+        const area: Area = {
+          id,
+          name: newName.trim(),
+          preview_uri: null,
+          latitude: null,
+          longitude: null,
+          created_at: '',
+          synced: false,
+        };
         selectArea(area);
       } else if (modalLevel === 'crag') {
         const id = await insertCrag({ name: newName.trim(), area_id: areaId });
