@@ -121,6 +121,7 @@ export function AddAreaScreen() {
           value={name}
           onChangeText={setName}
           placeholder="např. Roviště"
+          placeholderTextColor={colors.textMuted}
         />
 
         <Text style={styles.sectionTitle}>Preview ikona oblasti</Text>
@@ -180,6 +181,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 12,
     fontSize: 16,
+    color: colors.text,
     borderWidth: 1,
     borderColor: colors.border,
     marginBottom: 12,

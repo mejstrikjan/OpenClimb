@@ -1,5 +1,5 @@
-import React, { useState, useCallback } from 'react';
-import { View, Text, SectionList, StyleSheet, TouchableOpacity, Modal, TextInput } from 'react-native';
+import React, { useState, useCallback, useEffect } from 'react';
+import { View, Text, SectionList, StyleSheet, TouchableOpacity, Modal, TextInput, Keyboard, Platform } from 'react-native';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Ascent, ClimbingRoute } from '../types';
@@ -27,6 +27,7 @@ export function LogbookScreen() {
   const [sessionModalVisible, setSessionModalVisible] = useState(false);
   const [newSessionName, setNewSessionName] = useState('');
   const [newSessionNotes, setNewSessionNotes] = useState('');
+  const [sessionModalKeyboardHeight, setSessionModalKeyboardHeight] = useState(0);
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   useFocusEffect(
@@ -74,10 +75,40 @@ export function LogbookScreen() {
   };
 
   const handleStartSession = async () => {
+    Keyboard.dismiss();
     await startSession({ name: newSessionName, notes: newSessionNotes });
     setSessionModalVisible(false);
     await loadData();
   };
+
+  useEffect(() => {
+    if (!sessionModalVisible) {
+      setSessionModalKeyboardHeight(0);
+      return;
+    }
+
+    const showEvent = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
+    const hideEvent = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
+
+    const showSubscription = Keyboard.addListener(showEvent, (event) => {
+      setSessionModalKeyboardHeight(event.endCoordinates.height);
+    });
+    const hideSubscription = Keyboard.addListener(hideEvent, () => {
+      setSessionModalKeyboardHeight(0);
+    });
+
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
+  }, [sessionModalVisible]);
+
+  const closeSessionModal = useCallback(() => {
+    Keyboard.dismiss();
+    setSessionModalVisible(false);
+  }, []);
+
+  const sessionModalBottomInset = sessionModalKeyboardHeight > 0 ? sessionModalKeyboardHeight + 12 : 0;
 
   const sections: LogbookSection[] = ascents.reduce<LogbookSection[]>((grouped, ascent) => {
     const existingSection = grouped.find((section) => section.dateKey === ascent.date);
@@ -143,8 +174,14 @@ export function LogbookScreen() {
         contentContainerStyle={ascents.length === 0 ? styles.emptyList : styles.list}
         stickySectionHeadersEnabled={false}
       />
-      <Modal visible={sessionModalVisible} transparent animationType="slide" onRequestClose={() => setSessionModalVisible(false)}>
-        <View style={styles.modalOverlay}>
+      <Modal
+        visible={sessionModalVisible}
+        transparent
+        animationType="slide"
+        statusBarTranslucent
+        onRequestClose={closeSessionModal}
+      >
+        <View style={[styles.modalOverlay, { paddingBottom: sessionModalBottomInset }]}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Spustit session</Text>
             <TextInput
@@ -152,18 +189,20 @@ export function LogbookScreen() {
               value={newSessionName}
               onChangeText={setNewSessionName}
               placeholder="Název session"
+              placeholderTextColor={colors.textMuted}
             />
             <TextInput
               style={[styles.modalInput, styles.modalTextArea]}
               value={newSessionNotes}
               onChangeText={setNewSessionNotes}
               placeholder="Poznámka k session"
+              placeholderTextColor={colors.textMuted}
               multiline
               numberOfLines={3}
               textAlignVertical="top"
             />
             <View style={styles.modalActions}>
-              <TouchableOpacity style={styles.modalSecondaryButton} onPress={() => setSessionModalVisible(false)}>
+              <TouchableOpacity style={styles.modalSecondaryButton} onPress={closeSessionModal}>
                 <Text style={styles.modalSecondaryButtonText}>Zrušit</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.modalPrimaryButton} onPress={handleStartSession}>
@@ -240,6 +279,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.overlay,
     justifyContent: 'flex-end',
+    paddingTop: 32,
   },
   modalContent: {
     backgroundColor: colors.surface,

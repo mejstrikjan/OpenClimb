@@ -10,7 +10,7 @@ interface Props {
   onGradeChange: (grade: string) => void;
 }
 
-const SYSTEMS: GradeSystem[] = ['French', 'UIAA', 'V-scale'];
+const SYSTEMS: GradeSystem[] = ['French', 'Česká', 'UIAA', 'V-scale'];
 
 export function GradePicker({ system, grade, onSystemChange, onGradeChange }: Props) {
   const [modalVisible, setModalVisible] = useState(false);
@@ -69,9 +69,9 @@ const styles = StyleSheet.create({
   container: { marginBottom: 12 },
   label: { fontSize: 14, fontWeight: '600', color: colors.text, marginBottom: 6 },
   helperText: { fontSize: 12, color: colors.textMuted, marginBottom: 8 },
-  systemRow: { flexDirection: 'row', gap: 8, marginBottom: 12 },
+  systemRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 12 },
   systemButton: {
-    flex: 1, paddingVertical: 8, borderRadius: 8,
+    flex: 1, minWidth: 72, paddingVertical: 8, borderRadius: 8,
     borderWidth: 1, borderColor: colors.border, alignItems: 'center',
     backgroundColor: colors.surface,
   },

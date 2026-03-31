@@ -46,23 +46,6 @@ export function PhotoPicker({
     }
   };
 
-  const takePhoto = async () => {
-    const permission = await ImagePicker.requestCameraPermissionsAsync();
-    if (!permission.granted) {
-      Alert.alert('Oprávnění', 'Pro focení je potřeba přístup ke kameře.');
-      return;
-    }
-    const result = await ImagePicker.launchCameraAsync({
-      quality: 0.8,
-      allowsEditing: true,
-      aspect: [4, 3],
-      base64: output === 'dataUri',
-    });
-    if (!result.canceled && result.assets[0]) {
-      onPhotoSelected(resolveSelectedPhoto(result.assets[0], output));
-    }
-  };
-
   return (
     <View style={styles.container}>
       <Text style={styles.label}>Fotografie</Text>
@@ -74,16 +57,10 @@ export function PhotoPicker({
           </TouchableOpacity>
         </View>
       ) : (
-        <View style={styles.buttonRow}>
-          <TouchableOpacity style={styles.button} onPress={takePhoto}>
-            <Text style={styles.buttonIcon}>📷</Text>
-            <Text style={styles.buttonText}>Vyfotit</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={pickFromGallery}>
-            <Text style={styles.buttonIcon}>🖼️</Text>
-            <Text style={styles.buttonText}>Z galerie</Text>
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity style={styles.button} onPress={pickFromGallery}>
+          <Text style={styles.buttonIcon}>🖼️</Text>
+          <Text style={styles.buttonText}>Vybrat z galerie</Text>
+        </TouchableOpacity>
       )}
     </View>
   );
@@ -92,9 +69,8 @@ export function PhotoPicker({
 const styles = StyleSheet.create({
   container: { marginBottom: 12 },
   label: { fontSize: 14, fontWeight: '600', color: colors.text, marginBottom: 6 },
-  buttonRow: { flexDirection: 'row', gap: 12 },
   button: {
-    flex: 1, paddingVertical: 24, borderRadius: 12,
+    paddingVertical: 24, borderRadius: 12,
     borderWidth: 2, borderColor: colors.border, borderStyle: 'dashed',
     alignItems: 'center', justifyContent: 'center', backgroundColor: colors.surface,
   },

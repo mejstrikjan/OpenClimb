@@ -1,12 +1,12 @@
 export type RouteType = 'boulder' | 'sport' | 'trad' | 'indoor';
 
-export type GradeSystem = 'UIAA' | 'French' | 'V-scale';
+export type GradeSystem = 'UIAA' | 'French' | 'V-scale' | 'Česká';
 
 export const DEFAULT_GRADE_SYSTEM_BY_TYPE: Record<RouteType, GradeSystem> = {
   sport: 'French',
   trad: 'French',
   boulder: 'V-scale',
-  indoor: 'UIAA',
+  indoor: 'Česká',
 };
 
 export type RockType = '' | 'sandstone' | 'limestone' | 'granite' | 'gneiss' | 'basalt' | 'conglomerate' | 'other';
@@ -155,11 +155,24 @@ export const V_SCALE_GRADES = [
   'V9', 'V10', 'V11', 'V12', 'V13', 'V14', 'V15', 'V16', 'V17',
 ];
 
+export const CZECH_GRADES = [
+  '3', '4', '4+',
+  '5-', '5', '5+',
+  '6-', '6', '6+',
+  '7-', '7', '7+',
+  '8-', '8', '8+',
+  '9-', '9', '9+',
+  '10-', '10', '10+',
+  '11-', '11', '11+',
+  '12-', '12', '12+',
+];
+
 export function getGradesForSystem(system: GradeSystem): string[] {
   switch (system) {
     case 'UIAA': return UIAA_GRADES;
     case 'French': return FRENCH_GRADES;
     case 'V-scale': return V_SCALE_GRADES;
+    case 'Česká': return CZECH_GRADES;
   }
 }
 

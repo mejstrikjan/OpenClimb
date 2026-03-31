@@ -82,6 +82,7 @@ export function HomeScreen() {
         <TextInput
           style={styles.searchInput}
           placeholder="Hledat cesty..."
+          placeholderTextColor={colors.textMuted}
           value={search}
           onChangeText={setSearch}
           onSubmitEditing={loadRoutes}
@@ -145,7 +146,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12, fontSize: 16, shadowColor: colors.cardShadow,
     shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.1,
     shadowRadius: 2, elevation: 2,
-    borderWidth: 1, borderColor: colors.border,
+    borderWidth: 1, borderColor: colors.border, color: colors.text,
   },
   list: { paddingBottom: 80 },
   sectionHeader: {

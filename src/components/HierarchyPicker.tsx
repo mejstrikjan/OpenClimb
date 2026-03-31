@@ -207,6 +207,7 @@ export function HierarchyPicker({ areaId, cragId, sectorId, onChange }: Props) {
                 value={newName}
                 onChangeText={setNewName}
                 placeholder={`Nová ${getTitle().toLowerCase()}...`}
+                placeholderTextColor={colors.textMuted}
               />
               <TouchableOpacity style={styles.newButton} onPress={createNew}>
                 <Text style={styles.newButtonText}>+</Text>

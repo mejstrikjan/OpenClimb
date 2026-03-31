@@ -134,7 +134,7 @@ export function FilterSortBar({ filter, sort, onFilterChange, onSortChange }: Pr
           </View>
 
           <View style={styles.systemRow}>
-            {(['French', 'UIAA', 'V-scale'] as GradeSystem[]).map((s) => (
+            {(['French', 'Česká', 'UIAA', 'V-scale'] as GradeSystem[]).map((s) => (
               <TouchableOpacity
                 key={s}
                 style={[styles.sysChip, filter.gradeSystem === s && styles.sysChipActive]}
@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
   gradeBtnText: { fontSize: 14, color: colors.text },
   gradeSep: { color: colors.textMuted },
   clearGrade: { fontSize: 12, color: colors.danger, fontWeight: '600' },
-  systemRow: { flexDirection: 'row', gap: 6, marginTop: 4 },
+  systemRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 4 },
   sysChip: {
     paddingHorizontal: 10, paddingVertical: 4, borderRadius: 6,
     borderWidth: 1, borderColor: colors.border, backgroundColor: colors.surfaceMuted,

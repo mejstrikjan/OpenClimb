@@ -225,6 +225,7 @@ export function AddAscentScreen() {
         value={notes}
         onChangeText={setNotes}
         placeholder="Jak to šlo? Klíčové momenty, podmínky..."
+        placeholderTextColor={colors.textMuted}
         multiline
         numberOfLines={4}
         textAlignVertical="top"
@@ -261,7 +262,7 @@ const styles = StyleSheet.create({
   input: {
     backgroundColor: colors.surface, borderRadius: 10, paddingHorizontal: 14,
     paddingVertical: 12, fontSize: 16, borderWidth: 1, borderColor: colors.border,
-    marginBottom: 12,
+    marginBottom: 12, color: colors.text,
   },
   dateButton: {
     backgroundColor: colors.surface,

@@ -201,6 +201,7 @@ export function AddRouteScreen() {
           value={name}
           onChangeText={setName}
           placeholder="např. Stěna smrti"
+          placeholderTextColor={colors.textMuted}
         />
 
         <RouteTypePicker value={type} onChange={setType} />
@@ -290,6 +291,7 @@ export function AddRouteScreen() {
           value={description}
           onChangeText={setDescription}
           placeholder="Popište cestu — charakter, klíčová místa, tipy..."
+          placeholderTextColor={colors.textMuted}
           multiline
           numberOfLines={4}
           textAlignVertical="top"
@@ -343,7 +345,7 @@ const styles = StyleSheet.create({
   input: {
     backgroundColor: colors.surface, borderRadius: 10, paddingHorizontal: 14,
     paddingVertical: 12, fontSize: 16, borderWidth: 1, borderColor: colors.border,
-    marginBottom: 12,
+    marginBottom: 12, color: colors.text,
   },
   dateButton: {
     backgroundColor: colors.surface,
