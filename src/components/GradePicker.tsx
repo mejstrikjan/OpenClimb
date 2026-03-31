@@ -18,6 +18,7 @@ export function GradePicker({ system, grade, onSystemChange, onGradeChange }: Pr
   return (
     <View style={styles.container}>
       <Text style={styles.label}>Hodnotící systém</Text>
+      <Text style={styles.helperText}>Výchozí systém se předvyplní podle typu cesty, ale můžete ho změnit ručně.</Text>
       <View style={styles.systemRow}>
         {SYSTEMS.map((s) => (
           <TouchableOpacity
@@ -66,6 +67,7 @@ export function GradePicker({ system, grade, onSystemChange, onGradeChange }: Pr
 const styles = StyleSheet.create({
   container: { marginBottom: 12 },
   label: { fontSize: 14, fontWeight: '600', color: '#333', marginBottom: 6 },
+  helperText: { fontSize: 12, color: '#777', marginBottom: 8 },
   systemRow: { flexDirection: 'row', gap: 8, marginBottom: 12 },
   systemButton: {
     flex: 1, paddingVertical: 8, borderRadius: 8,

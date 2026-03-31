@@ -12,6 +12,13 @@ import { LocationPicker } from '../components/LocationPicker';
 import { HierarchyPicker } from '../components/HierarchyPicker';
 import type { RootStackParamList } from '../navigation/AppNavigator';
 
+const DEFAULT_GRADE_SYSTEM_BY_TYPE: Record<RouteType, GradeSystem> = {
+  sport: 'French',
+  trad: 'French',
+  boulder: 'V-scale',
+  indoor: 'UIAA',
+};
+
 export function AddRouteScreen() {
   const navigation = useNavigation();
   const route = useRoute<RouteProp<RootStackParamList, 'AddRoute'>>();
@@ -32,6 +39,7 @@ export function AddRouteScreen() {
   const [sectorId, setSectorId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [loaded, setLoaded] = useState(!isEditing);
+  const [userChangedGradeSystem, setUserChangedGradeSystem] = useState(false);
 
   useEffect(() => {
     if (!editId) return;
@@ -49,10 +57,23 @@ export function AddRouteScreen() {
         setAreaId(r.area_id);
         setCragId(r.crag_id);
         setSectorId(r.sector_id);
+        setUserChangedGradeSystem(true);
       }
       setLoaded(true);
     });
   }, [editId]);
+
+  useEffect(() => {
+    if (isEditing || userChangedGradeSystem) {
+      return;
+    }
+
+    const nextSystem = DEFAULT_GRADE_SYSTEM_BY_TYPE[type];
+    if (gradeSystem !== nextSystem) {
+      setGradeSystem(nextSystem);
+      setGrade('');
+    }
+  }, [gradeSystem, isEditing, type, userChangedGradeSystem]);
 
   const handleSave = async () => {
     if (!name.trim()) {
@@ -130,7 +151,10 @@ export function AddRouteScreen() {
         <GradePicker
           system={gradeSystem}
           grade={grade}
-          onSystemChange={setGradeSystem}
+          onSystemChange={(system) => {
+            setUserChangedGradeSystem(true);
+            setGradeSystem(system);
+          }}
           onGradeChange={setGrade}
         />
 
