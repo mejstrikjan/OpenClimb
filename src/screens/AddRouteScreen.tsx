@@ -2,7 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, ScrollView, StyleSheet, TouchableOpacity, Alert, KeyboardAvoidingView, Platform } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import type { RouteProp } from '@react-navigation/native';
-import { GradeSystem, RouteType } from '../types';
+import {
+  DEFAULT_GRADE_SYSTEM_BY_TYPE,
+  GradeSystem,
+  IndoorColor,
+  INDOOR_COLOR_OPTIONS,
+  ROCK_TYPE_OPTIONS,
+  RockType,
+  RouteType,
+} from '../types';
 import { insertRoute, updateRoute, getRouteById } from '../database/routeRepository';
 import { StarRating } from '../components/StarRating';
 import { GradePicker } from '../components/GradePicker';
@@ -12,13 +20,7 @@ import { LocationPicker } from '../components/LocationPicker';
 import { HierarchyPicker } from '../components/HierarchyPicker';
 import type { RootStackParamList } from '../navigation/AppNavigator';
 import { colors } from '../theme/colors';
-
-const DEFAULT_GRADE_SYSTEM_BY_TYPE: Record<RouteType, GradeSystem> = {
-  sport: 'French',
-  trad: 'French',
-  boulder: 'V-scale',
-  indoor: 'UIAA',
-};
+import DateTimePicker, { DateTimePickerAndroid, type DateTimePickerEvent } from '@react-native-community/datetimepicker';
 
 export function AddRouteScreen() {
   const navigation = useNavigation();
@@ -33,6 +35,9 @@ export function AddRouteScreen() {
   const [description, setDescription] = useState('');
   const [rating, setRating] = useState(0);
   const [photoUri, setPhotoUri] = useState<string | null>(null);
+  const [rockType, setRockType] = useState<RockType>('');
+  const [indoorColor, setIndoorColor] = useState<IndoorColor>('');
+  const [routeDate, setRouteDate] = useState(new Date().toISOString().split('T')[0]);
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
   const [areaId, setAreaId] = useState<string | null>(null);
@@ -41,6 +46,7 @@ export function AddRouteScreen() {
   const [saving, setSaving] = useState(false);
   const [loaded, setLoaded] = useState(!isEditing);
   const [userChangedGradeSystem, setUserChangedGradeSystem] = useState(false);
+  const [showIosDatePicker, setShowIosDatePicker] = useState(false);
 
   useEffect(() => {
     if (!editId) return;
@@ -53,6 +59,9 @@ export function AddRouteScreen() {
         setDescription(r.description);
         setRating(r.rating);
         setPhotoUri(r.photo_uri);
+        setRockType(r.rock_type);
+        setIndoorColor(r.indoor_color);
+        setRouteDate(r.route_date || r.created_at.split('T')[0]);
         setLatitude(r.latitude);
         setLongitude(r.longitude);
         setAreaId(r.area_id);
@@ -76,6 +85,14 @@ export function AddRouteScreen() {
     }
   }, [gradeSystem, isEditing, type, userChangedGradeSystem]);
 
+  useEffect(() => {
+    if (type === 'indoor') {
+      setRockType('');
+      return;
+    }
+    setIndoorColor('');
+  }, [type]);
+
   const handleSave = async () => {
     if (!name.trim()) {
       Alert.alert('Chyba', 'Zadejte název cesty.');
@@ -97,6 +114,9 @@ export function AddRouteScreen() {
           crag_id: cragId,
           sector_id: sectorId,
           photo_uri: photoUri,
+          rock_type: type === 'indoor' ? '' : rockType,
+          indoor_color: type === 'indoor' ? indoorColor : '',
+          route_date: routeDate,
         });
       } else {
         await insertRoute({
@@ -112,6 +132,9 @@ export function AddRouteScreen() {
           crag_id: cragId,
           sector_id: sectorId,
           photo_uri: photoUri,
+          rock_type: type === 'indoor' ? '' : rockType,
+          indoor_color: type === 'indoor' ? indoorColor : '',
+          route_date: routeDate,
         });
       }
       navigation.goBack();
@@ -121,6 +144,39 @@ export function AddRouteScreen() {
     } finally {
       setSaving(false);
     }
+  };
+
+  const selectedRouteDate = parseStoredDate(routeDate);
+
+  const handleRouteDateChange = (event: DateTimePickerEvent, pickedDate?: Date) => {
+    if (Platform.OS === 'ios') {
+      if (event.type === 'dismissed') {
+        setShowIosDatePicker(false);
+        return;
+      }
+      if (pickedDate) {
+        setRouteDate(formatDateForStorage(pickedDate));
+      }
+      return;
+    }
+
+    if (event.type === 'set' && pickedDate) {
+      setRouteDate(formatDateForStorage(pickedDate));
+    }
+  };
+
+  const openRouteDatePicker = () => {
+    if (Platform.OS === 'android') {
+      DateTimePickerAndroid.open({
+        value: selectedRouteDate,
+        mode: 'date',
+        is24Hour: true,
+        onChange: handleRouteDateChange,
+      });
+      return;
+    }
+
+    setShowIosDatePicker((current) => !current);
   };
 
   if (!loaded) {
@@ -158,6 +214,69 @@ export function AddRouteScreen() {
           }}
           onGradeChange={setGrade}
         />
+
+        <Text style={styles.label}>Datum vytvoření cesty</Text>
+        <TouchableOpacity style={styles.dateButton} onPress={openRouteDatePicker}>
+          <Text style={styles.dateButtonLabel}>Vybrané datum</Text>
+          <Text style={styles.dateButtonValue}>{formatDateForDisplay(selectedRouteDate)}</Text>
+          <Text style={styles.dateButtonMeta}>{routeDate}</Text>
+        </TouchableOpacity>
+        {Platform.OS === 'ios' && showIosDatePicker ? (
+          <View style={styles.iosDatePickerWrap}>
+            <DateTimePicker
+              value={selectedRouteDate}
+              mode="date"
+              display="inline"
+              onChange={handleRouteDateChange}
+            />
+          </View>
+        ) : null}
+
+        {type === 'indoor' ? (
+          <>
+            <Text style={styles.label}>Barva cesty / stěny</Text>
+            <View style={styles.contextRow}>
+              <TouchableOpacity
+                style={[styles.contextChip, indoorColor === '' && styles.contextChipActive]}
+                onPress={() => setIndoorColor('')}
+              >
+                <Text style={[styles.contextChipText, indoorColor === '' && styles.contextChipTextActive]}>
+                  Bez určení
+                </Text>
+              </TouchableOpacity>
+              {INDOOR_COLOR_OPTIONS.map((colorName) => {
+                const active = indoorColor === colorName;
+                return (
+                  <TouchableOpacity
+                    key={colorName}
+                    style={[styles.contextChip, active && styles.contextChipActive]}
+                    onPress={() => setIndoorColor(colorName)}
+                  >
+                    <Text style={[styles.contextChipText, active && styles.contextChipTextActive]}>{colorName}</Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          </>
+        ) : (
+          <>
+            <Text style={styles.label}>Druh skály</Text>
+            <View style={styles.contextRow}>
+              {ROCK_TYPE_OPTIONS.map((option) => {
+                const active = rockType === option.value;
+                return (
+                  <TouchableOpacity
+                    key={option.value || 'unset-rock'}
+                    style={[styles.contextChip, active && styles.contextChipActive]}
+                    onPress={() => setRockType(option.value)}
+                  >
+                    <Text style={[styles.contextChipText, active && styles.contextChipTextActive]}>{option.label}</Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          </>
+        )}
 
         <Text style={styles.sectionTitle}>Hodnocení</Text>
         <View style={styles.ratingRow}>
@@ -226,6 +345,65 @@ const styles = StyleSheet.create({
     paddingVertical: 12, fontSize: 16, borderWidth: 1, borderColor: colors.border,
     marginBottom: 12,
   },
+  dateButton: {
+    backgroundColor: colors.surface,
+    borderRadius: 10,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    borderWidth: 1,
+    borderColor: colors.border,
+    marginBottom: 12,
+  },
+  dateButtonLabel: {
+    fontSize: 12,
+    color: colors.textMuted,
+    marginBottom: 4,
+  },
+  dateButtonValue: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: colors.text,
+  },
+  dateButtonMeta: {
+    marginTop: 4,
+    fontSize: 12,
+    color: colors.primaryDark,
+    fontFamily: 'monospace',
+  },
+  iosDatePickerWrap: {
+    backgroundColor: colors.surface,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: colors.border,
+    overflow: 'hidden',
+    marginBottom: 12,
+  },
+  contextRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginBottom: 12,
+  },
+  contextChip: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 999,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  contextChipActive: {
+    backgroundColor: colors.primary,
+    borderColor: colors.primaryDark,
+  },
+  contextChipText: {
+    fontSize: 12,
+    color: colors.textMuted,
+    fontWeight: '700',
+  },
+  contextChipTextActive: {
+    color: colors.textOnDark,
+  },
   textArea: { minHeight: 100 },
   ratingRow: {
     flexDirection: 'row', justifyContent: 'space-between',
@@ -238,3 +416,27 @@ const styles = StyleSheet.create({
   saveButtonDisabled: { opacity: 0.6 },
   saveButtonText: { color: colors.textOnDark, fontSize: 17, fontWeight: '700' },
 });
+
+function parseStoredDate(value: string): Date {
+  const parsed = new Date(`${value}T12:00:00`);
+  if (Number.isNaN(parsed.getTime())) {
+    return new Date();
+  }
+  return parsed;
+}
+
+function formatDateForStorage(value: Date): string {
+  const year = value.getFullYear();
+  const month = `${value.getMonth() + 1}`.padStart(2, '0');
+  const day = `${value.getDate()}`.padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+function formatDateForDisplay(value: Date): string {
+  return value.toLocaleDateString('cs-CZ', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  });
+}

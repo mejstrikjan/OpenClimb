@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
-import { ClimbingRoute } from '../types';
+import { ClimbingRoute, ROCK_TYPE_OPTIONS } from '../types';
 import { StarRating } from './StarRating';
 import { colors } from '../theme/colors';
 
@@ -16,7 +16,24 @@ const TYPE_ICONS: Record<string, string> = {
   indoor: '🏢',
 };
 
+const TYPE_ACCENTS: Record<string, string> = {
+  sport: colors.primary,
+  boulder: '#6A5B4D',
+  trad: '#7A6242',
+  indoor: '#4E6A8A',
+};
+
 export function RouteCard({ route, onPress }: Props) {
+  const rockTypeLabel = ROCK_TYPE_OPTIONS.find((item) => item.value === route.rock_type)?.label;
+  const contextualMeta =
+    route.type === 'indoor'
+      ? route.indoor_color
+        ? `Barva ${route.indoor_color}`
+        : null
+      : route.rock_type
+        ? rockTypeLabel ?? null
+        : null;
+
   return (
     <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.7}>
       {route.photo_uri && (
@@ -33,6 +50,11 @@ export function RouteCard({ route, onPress }: Props) {
           <Text style={styles.type}>{TYPE_ICONS[route.type] || ''} {route.type}</Text>
           <StarRating rating={route.rating} size={16} readonly />
         </View>
+        {contextualMeta ? (
+          <View style={[styles.contextBadge, { backgroundColor: TYPE_ACCENTS[route.type] ?? colors.primary }]}>
+            <Text style={styles.contextBadgeText}>{contextualMeta}</Text>
+          </View>
+        ) : null}
         {route.description ? (
           <Text style={styles.description} numberOfLines={2}>{route.description}</Text>
         ) : null}
@@ -63,6 +85,14 @@ const styles = StyleSheet.create({
   gradeText: { color: colors.textOnDark, fontWeight: '700', fontSize: 13 },
   meta: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 },
   type: { fontSize: 13, color: colors.textMuted, textTransform: 'capitalize' },
+  contextBadge: {
+    alignSelf: 'flex-start',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 999,
+    marginTop: 2,
+  },
+  contextBadgeText: { color: colors.textOnDark, fontWeight: '700', fontSize: 11 },
   description: { fontSize: 13, color: colors.textMuted, marginTop: 4 },
   unsyncedBadge: {
     marginTop: 6, alignSelf: 'flex-start', fontSize: 11,

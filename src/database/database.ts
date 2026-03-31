@@ -1,7 +1,7 @@
 import * as SQLite from 'expo-sqlite';
 
 const DB_NAME = 'climbing.db';
-const SCHEMA_VERSION = 3;
+const SCHEMA_VERSION = 8;
 
 let db: SQLite.SQLiteDatabase | null = null;
 let dbInitialization: Promise<SQLite.SQLiteDatabase> | null = null;
@@ -85,6 +85,9 @@ async function initDatabase(database: SQLite.SQLiteDatabase): Promise<void> {
       crag_id TEXT,
       sector_id TEXT,
       photo_uri TEXT,
+      rock_type TEXT NOT NULL DEFAULT '',
+      indoor_color TEXT NOT NULL DEFAULT '',
+      route_date TEXT NOT NULL DEFAULT '',
       created_at TEXT NOT NULL,
       updated_at TEXT NOT NULL,
       synced INTEGER NOT NULL DEFAULT 0,
@@ -96,14 +99,30 @@ async function initDatabase(database: SQLite.SQLiteDatabase): Promise<void> {
     CREATE TABLE IF NOT EXISTS ascents (
       id TEXT PRIMARY KEY,
       route_id TEXT NOT NULL,
+      session_id TEXT,
       date TEXT NOT NULL,
       style TEXT NOT NULL DEFAULT 'redpoint',
+      category TEXT NOT NULL DEFAULT '',
       success INTEGER NOT NULL DEFAULT 1,
       notes TEXT NOT NULL DEFAULT '',
       created_at TEXT NOT NULL,
       updated_at TEXT NOT NULL,
       synced INTEGER NOT NULL DEFAULT 0,
-      FOREIGN KEY (route_id) REFERENCES routes(id) ON DELETE CASCADE
+      FOREIGN KEY (route_id) REFERENCES routes(id) ON DELETE CASCADE,
+      FOREIGN KEY (session_id) REFERENCES sessions(id) ON DELETE SET NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS sessions (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      notes TEXT NOT NULL DEFAULT '',
+      date TEXT NOT NULL,
+      started_at TEXT NOT NULL,
+      ended_at TEXT,
+      active INTEGER NOT NULL DEFAULT 1,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL,
+      synced INTEGER NOT NULL DEFAULT 0
     );
 
     CREATE TABLE IF NOT EXISTS user_profile (
@@ -123,6 +142,42 @@ async function ensureSchemaVersion(database: SQLite.SQLiteDatabase): Promise<voi
 
   if (currentVersion < 3) {
     await ensureColumn(database, 'areas', 'preview_uri', 'TEXT');
+  }
+
+  if (currentVersion < 4) {
+    await ensureColumn(database, 'ascents', 'category', "TEXT NOT NULL DEFAULT ''");
+  }
+
+  if (currentVersion < 5) {
+    await ensureColumn(database, 'routes', 'route_date', "TEXT NOT NULL DEFAULT ''");
+    await database.execAsync(`UPDATE routes SET route_date = substr(created_at, 1, 10) WHERE route_date = '';`);
+  }
+
+  if (currentVersion < 6) {
+    await database.execAsync(`
+      CREATE TABLE IF NOT EXISTS sessions (
+        id TEXT PRIMARY KEY,
+        name TEXT NOT NULL,
+        notes TEXT NOT NULL DEFAULT '',
+        date TEXT NOT NULL,
+        started_at TEXT NOT NULL,
+        ended_at TEXT,
+        active INTEGER NOT NULL DEFAULT 1,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL,
+        synced INTEGER NOT NULL DEFAULT 0
+      );
+    `);
+    await ensureColumn(database, 'ascents', 'session_id', 'TEXT');
+  }
+
+  if (currentVersion < 7) {
+    await ensureColumn(database, 'sessions', 'notes', "TEXT NOT NULL DEFAULT ''");
+  }
+
+  if (currentVersion < 8) {
+    await ensureColumn(database, 'routes', 'rock_type', "TEXT NOT NULL DEFAULT ''");
+    await ensureColumn(database, 'routes', 'indoor_color', "TEXT NOT NULL DEFAULT ''");
   }
 
   await database.execAsync(`PRAGMA user_version = ${SCHEMA_VERSION};`);

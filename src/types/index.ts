@@ -2,7 +2,43 @@ export type RouteType = 'boulder' | 'sport' | 'trad' | 'indoor';
 
 export type GradeSystem = 'UIAA' | 'French' | 'V-scale';
 
+export const DEFAULT_GRADE_SYSTEM_BY_TYPE: Record<RouteType, GradeSystem> = {
+  sport: 'French',
+  trad: 'French',
+  boulder: 'V-scale',
+  indoor: 'UIAA',
+};
+
+export type RockType = '' | 'sandstone' | 'limestone' | 'granite' | 'gneiss' | 'basalt' | 'conglomerate' | 'other';
+
+export const ROCK_TYPE_OPTIONS: Array<{ value: RockType; label: string }> = [
+  { value: '', label: 'Bez určení' },
+  { value: 'sandstone', label: 'Pískovec' },
+  { value: 'limestone', label: 'Vápenec' },
+  { value: 'granite', label: 'Žula' },
+  { value: 'gneiss', label: 'Rula' },
+  { value: 'basalt', label: 'Čedič' },
+  { value: 'conglomerate', label: 'Slepenec' },
+  { value: 'other', label: 'Jiná skála' },
+];
+
+export const INDOOR_COLOR_OPTIONS = [
+  'Červená',
+  'Modrá',
+  'Zelená',
+  'Žlutá',
+  'Oranžová',
+  'Fialová',
+  'Černá',
+  'Bílá',
+  'Růžová',
+  'Šedá',
+] as const;
+
+export type IndoorColor = '' | (typeof INDOOR_COLOR_OPTIONS)[number];
+
 export type AscentStyle = 'flash' | 'redpoint' | 'onsight' | 'project';
+export type AscentCategory = '' | 'training' | 'trip' | 'milestone' | 'competition';
 
 export interface Area {
   id: string;
@@ -50,6 +86,9 @@ export interface ClimbingRoute {
   crag_id: string | null;
   sector_id: string | null;
   photo_uri: string | null;
+  rock_type: RockType;
+  indoor_color: IndoorColor;
+  route_date: string;
   created_at: string;
   updated_at: string;
   synced: boolean;
@@ -58,14 +97,37 @@ export interface ClimbingRoute {
 export interface Ascent {
   id: string;
   route_id: string;
+  session_id: string | null;
   date: string;
   style: AscentStyle;
+  category: AscentCategory;
   success: boolean;
   notes: string;
   created_at: string;
   updated_at: string;
   synced: boolean;
 }
+
+export interface ClimbingSession {
+  id: string;
+  name: string;
+  notes: string;
+  date: string;
+  started_at: string;
+  ended_at: string | null;
+  active: boolean;
+  created_at: string;
+  updated_at: string;
+  synced: boolean;
+}
+
+export const ASCENT_CATEGORIES: Array<{ value: AscentCategory; label: string }> = [
+  { value: '', label: 'Bez kategorie' },
+  { value: 'training', label: 'Trénink' },
+  { value: 'trip', label: 'Výjezd' },
+  { value: 'milestone', label: 'Milník' },
+  { value: 'competition', label: 'Závody' },
+];
 
 export interface UserProfile {
   id: string;

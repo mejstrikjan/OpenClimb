@@ -3,7 +3,7 @@ import { View, Text, Image, ScrollView, StyleSheet, TouchableOpacity, Alert } fr
 import { useRoute, useNavigation, useFocusEffect } from '@react-navigation/native';
 import type { RouteProp } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { ClimbingRoute, Ascent } from '../types';
+import { ClimbingRoute, Ascent, ROCK_TYPE_OPTIONS } from '../types';
 import { getRouteById, deleteRoute } from '../database/routeRepository';
 import { getAscentsByRoute, deleteAscent } from '../database/ascentRepository';
 import { getAreaById } from '../database/areaRepository';
@@ -104,6 +104,16 @@ export function RouteDetailScreen() {
     );
   }
 
+  const rockTypeLabel = ROCK_TYPE_OPTIONS.find((item) => item.value === route.rock_type)?.label;
+  const typeContextLabel =
+    route.type === 'indoor'
+      ? route.indoor_color
+        ? `Barva cesty: ${route.indoor_color}`
+        : null
+      : route.rock_type
+        ? `Skála: ${rockTypeLabel ?? route.rock_type}`
+        : null;
+
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       {route.photo_uri && (
@@ -121,6 +131,11 @@ export function RouteDetailScreen() {
         <Text style={styles.typeLabel}>{TYPE_LABELS[route.type] || route.type}</Text>
         <StarRating rating={route.rating} size={22} readonly />
       </View>
+      {typeContextLabel ? (
+        <View style={styles.contextMetaWrap}>
+          <Text style={styles.contextMeta}>{typeContextLabel}</Text>
+        </View>
+      ) : null}
 
       {locationBreadcrumb ? (
         <View style={styles.section}>
@@ -199,6 +214,7 @@ export function RouteDetailScreen() {
 
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Info</Text>
+        <Text style={styles.info}>Datum vytvoření cesty: {formatRouteDate(route.route_date)}</Text>
         <Text style={styles.info}>Vytvořeno: {new Date(route.created_at).toLocaleDateString('cs-CZ')}</Text>
         <Text style={styles.info}>Upraveno: {new Date(route.updated_at).toLocaleDateString('cs-CZ')}</Text>
         <Text style={styles.info}>
@@ -241,6 +257,17 @@ const styles = StyleSheet.create({
     alignItems: 'center', paddingHorizontal: 16, marginBottom: 8,
   },
   typeLabel: { fontSize: 15, color: colors.textMuted },
+  contextMetaWrap: { paddingHorizontal: 16, marginBottom: 4 },
+  contextMeta: {
+    alignSelf: 'flex-start',
+    backgroundColor: colors.primarySoft,
+    color: colors.primaryDark,
+    fontSize: 12,
+    fontWeight: '700',
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 999,
+  },
   section: {
     backgroundColor: colors.surface, marginHorizontal: 16, marginTop: 12,
     borderRadius: 12, padding: 16,
@@ -271,3 +298,16 @@ const styles = StyleSheet.create({
   },
   deleteButtonText: { color: colors.textOnDark, fontSize: 16, fontWeight: '700' },
 });
+
+function formatRouteDate(value: string): string {
+  if (!value) {
+    return 'Neuvedeno';
+  }
+
+  const parsed = new Date(`${value}T12:00:00`);
+  if (Number.isNaN(parsed.getTime())) {
+    return value;
+  }
+
+  return parsed.toLocaleDateString('cs-CZ');
+}

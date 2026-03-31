@@ -1,6 +1,15 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Modal, ScrollView } from 'react-native';
-import { FilterState, SortState, SortField, SortDirection, RouteType, GradeSystem, getGradesForSystem } from '../types';
+import {
+  DEFAULT_GRADE_SYSTEM_BY_TYPE,
+  FilterState,
+  SortState,
+  SortField,
+  SortDirection,
+  RouteType,
+  GradeSystem,
+  getGradesForSystem,
+} from '../types';
 import { StarRating } from './StarRating';
 import { colors } from '../theme/colors';
 
@@ -39,6 +48,13 @@ export function FilterSortBar({ filter, sort, onFilterChange, onSortChange }: Pr
     const types = filter.types.includes(t)
       ? filter.types.filter((x) => x !== t)
       : [...filter.types, t];
+
+    if (types.length === 1) {
+      const nextSystem = DEFAULT_GRADE_SYSTEM_BY_TYPE[types[0]];
+      onFilterChange({ ...filter, types, gradeSystem: nextSystem, gradeMin: '', gradeMax: '' });
+      return;
+    }
+
     onFilterChange({ ...filter, types });
   };
 
@@ -128,6 +144,11 @@ export function FilterSortBar({ filter, sort, onFilterChange, onSortChange }: Pr
               </TouchableOpacity>
             ))}
           </View>
+          {filter.types.length === 1 ? (
+            <Text style={styles.systemHint}>
+              Výchozí systém se podle typu nastavil na {DEFAULT_GRADE_SYSTEM_BY_TYPE[filter.types[0]]}.
+            </Text>
+          ) : null}
         </View>
       )}
 
@@ -210,6 +231,7 @@ const styles = StyleSheet.create({
   sysChipActive: { backgroundColor: colors.surfaceDark, borderColor: colors.surfaceDark },
   sysText: { fontSize: 11, color: colors.textMuted },
   sysTextActive: { color: colors.textOnDark },
+  systemHint: { marginTop: 6, fontSize: 11, color: colors.textMuted },
   modalOverlay: { flex: 1, backgroundColor: colors.overlay, justifyContent: 'flex-end' },
   modalContent: {
     backgroundColor: colors.surface, borderTopLeftRadius: 16, borderTopRightRadius: 16,

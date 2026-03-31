@@ -95,10 +95,10 @@ export async function insertRoute(route: Omit<ClimbingRoute, 'id' | 'created_at'
   const now = new Date().toISOString();
   const gradeIdx = getGradeIndex(route.grade, route.grade_system);
   await db.runAsync(
-    `INSERT INTO routes (id, name, grade, grade_system, grade_index, type, description, rating, latitude, longitude, area_id, crag_id, sector_id, photo_uri, created_at, updated_at, synced)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)`,
+    `INSERT INTO routes (id, name, grade, grade_system, grade_index, type, description, rating, latitude, longitude, area_id, crag_id, sector_id, photo_uri, rock_type, indoor_color, route_date, created_at, updated_at, synced)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)`,
     [id, route.name, route.grade, route.grade_system, gradeIdx, route.type, route.description, route.rating,
-     route.latitude, route.longitude, route.area_id, route.crag_id, route.sector_id, route.photo_uri, now, now]
+     route.latitude, route.longitude, route.area_id, route.crag_id, route.sector_id, route.photo_uri, route.rock_type, route.indoor_color, route.route_date, now, now]
   );
   return id;
 }
@@ -125,6 +125,9 @@ export async function updateRoute(id: string, route: Partial<Omit<ClimbingRoute,
   if (route.crag_id !== undefined) { fields.push('crag_id = ?'); values.push(route.crag_id); }
   if (route.sector_id !== undefined) { fields.push('sector_id = ?'); values.push(route.sector_id); }
   if (route.photo_uri !== undefined) { fields.push('photo_uri = ?'); values.push(route.photo_uri); }
+  if (route.rock_type !== undefined) { fields.push('rock_type = ?'); values.push(route.rock_type); }
+  if (route.indoor_color !== undefined) { fields.push('indoor_color = ?'); values.push(route.indoor_color); }
+  if (route.route_date !== undefined) { fields.push('route_date = ?'); values.push(route.route_date); }
 
   values.push(id);
   await db.runAsync(`UPDATE routes SET ${fields.join(', ')} WHERE id = ?`, values);
@@ -151,6 +154,9 @@ function mapRow(row: any): ClimbingRoute {
     crag_id: row.crag_id,
     sector_id: row.sector_id,
     photo_uri: row.photo_uri,
+    rock_type: row.rock_type ?? '',
+    indoor_color: row.indoor_color ?? '',
+    route_date: row.route_date ?? '',
     created_at: row.created_at,
     updated_at: row.updated_at,
     synced: row.synced === 1,
