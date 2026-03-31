@@ -4,12 +4,31 @@ const DB_NAME = 'climbing.db';
 const SCHEMA_VERSION = 3;
 
 let db: SQLite.SQLiteDatabase | null = null;
+let dbInitialization: Promise<SQLite.SQLiteDatabase> | null = null;
 
 export async function getDatabase(): Promise<SQLite.SQLiteDatabase> {
-  if (db) return db;
-  db = await SQLite.openDatabaseAsync(DB_NAME);
-  await initDatabase(db);
-  return db;
+  if (db) {
+    return db;
+  }
+
+  if (!dbInitialization) {
+    dbInitialization = initializeDatabase();
+  }
+
+  try {
+    return await dbInitialization;
+  } catch (error) {
+    dbInitialization = null;
+    db = null;
+    throw error;
+  }
+}
+
+async function initializeDatabase(): Promise<SQLite.SQLiteDatabase> {
+  const database = await SQLite.openDatabaseAsync(DB_NAME);
+  await initDatabase(database);
+  db = database;
+  return database;
 }
 
 async function initDatabase(database: SQLite.SQLiteDatabase): Promise<void> {

@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "climbing-app",
-    "slug": "climbing-app",
+    "name": "CragIndex",
+    "slug": "cragindex",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -22,7 +22,7 @@
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.anonymous.climbingapp"
+      "package": "app.cragindex.mobile"
     },
     "web": {
       "favicon": "./assets/favicon.png"

@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useMemo } from 'react';
-import { Alert, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Area, ClimbingRoute, RouteType } from '../types';
@@ -117,128 +117,130 @@ export function MapScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <View>
-          <Text style={styles.title}>Lezecké oblasti</Text>
-          <Text style={styles.subtitle}>
-            {filteredAreas.length} zobrazených oblastí, {areasWithLocation.length} z nich má polohu na mapě
+      <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
+        <View style={styles.header}>
+          <View>
+            <Text style={styles.title}>Lezecké oblasti</Text>
+            <Text style={styles.subtitle}>
+              {filteredAreas.length} zobrazených oblastí, {areasWithLocation.length} z nich má polohu na mapě
+            </Text>
+          </View>
+        </View>
+
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>Ikony oblastí</Text>
+            <Text style={styles.sectionMeta}>Filtry + editace</Text>
+          </View>
+          <View style={styles.filterRow}>
+            {TYPE_FILTERS.map(({ type, label, emoji }) => {
+              const active = selectedTypes.includes(type);
+              return (
+                <TouchableOpacity
+                  key={type}
+                  style={[styles.filterChip, active && styles.filterChipActive]}
+                  onPress={() =>
+                    setSelectedTypes((current) =>
+                      current.includes(type) ? current.filter((item) => item !== type) : [...current, type]
+                    )
+                  }
+                >
+                  <Text style={[styles.filterChipText, active && styles.filterChipTextActive]}>
+                    {emoji} {label}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+          <TouchableOpacity
+            style={[styles.toggleRow, onlyWithPreview && styles.toggleRowActive]}
+            onPress={() => setOnlyWithPreview((current) => !current)}
+          >
+            <Text style={[styles.toggleText, onlyWithPreview && styles.toggleTextActive]}>
+              {onlyWithPreview ? '✓' : '○'} Jen oblasti s ikonou
+            </Text>
+          </TouchableOpacity>
+
+          <FlatList
+            horizontal
+            data={filteredAreas}
+            keyExtractor={(item) => item.id}
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={filteredAreas.length === 0 ? styles.emptyAreasList : styles.areaList}
+            ListEmptyComponent={
+              <View style={styles.emptyCard}>
+                <Text style={styles.emptyCardTitle}>Nic neodpovídá filtru</Text>
+                <Text style={styles.emptyCardText}>Zkuste změnit typy cest nebo vypnout filtr ikon.</Text>
+              </View>
+            }
+            renderItem={({ item }) => (
+              <AreaChip
+                area={item}
+                routeCount={(selectedTypes.length > 0 ? filteredRouteCountsByAreaId : routesByAreaId).get(item.id) ?? 0}
+                onPress={() => navigation.navigate('AddArea', { areaId: item.id })}
+              />
+            )}
+          />
+        </View>
+
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>Mapa oblastí</Text>
+            <Text style={styles.sectionMeta}>Mapy.com + clustering</Text>
+          </View>
+          <MapyWebView
+            mode="browse"
+            height={300}
+            centerLatitude={mapRegion.latitude}
+            centerLongitude={mapRegion.longitude}
+            zoom={areasWithLocation.length === 0 ? 7 : 10}
+            markers={areaMarkers}
+            emptyStateTitle="Chybí Mapy.com API klíč"
+            emptyStateText="Uložte klíč do .env.local jako EXPO_PUBLIC_MAPY_API_KEY. Klíč nedávejte do repozitáře a v Mapy.com ho omezte na User-Agent a jen na potřebné služby."
+            onMarkerPress={(areaId) => navigation.navigate('AddArea', { areaId })}
+            onMapError={(message) => Alert.alert('Mapa oblastí', message)}
+          />
+          {areasWithLocation.length === 0 ? (
+            <View style={styles.mapHint}>
+              <Text style={styles.mapHintTitle}>Mapa je zatím prázdná</Text>
+              <Text style={styles.mapHintText}>
+                Otevřete oblast a klepnutím do mapy jí nastavte souřadnice.
+              </Text>
+            </View>
+          ) : null}
+          {!hasMapyApiKey() ? (
+            <View style={styles.securityHint}>
+              <Text style={styles.securityHintTitle}>Doporučené zabezpečení klíče</Text>
+              <Text style={styles.securityHintText}>
+                V administraci Mapy.com nastavte omezení podle User-Agent a povolte jen službu mapových dlaždic.
+              </Text>
+            </View>
+          ) : null}
+        </View>
+
+        <View style={styles.footerPanel}>
+          <Text style={styles.footerTitle}>Rychlý přehled</Text>
+          <Text style={styles.footerText}>
+            Oblasti s mapou: {areasWithLocation.length} / {filteredAreas.length}
+          </Text>
+          <Text style={styles.footerText}>
+            Cesty přiřazené do oblastí: {routes.filter((route) => route.area_id).length} / {routes.length}
           </Text>
         </View>
+
         <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate('AddArea')}>
           <Text style={styles.addButtonText}>+ Oblast</Text>
         </TouchableOpacity>
-      </View>
-
-      <View style={styles.section}>
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Ikony oblastí</Text>
-          <Text style={styles.sectionMeta}>Filtry + editace</Text>
-        </View>
-        <View style={styles.filterRow}>
-          {TYPE_FILTERS.map(({ type, label, emoji }) => {
-            const active = selectedTypes.includes(type);
-            return (
-              <TouchableOpacity
-                key={type}
-                style={[styles.filterChip, active && styles.filterChipActive]}
-                onPress={() =>
-                  setSelectedTypes((current) =>
-                    current.includes(type) ? current.filter((item) => item !== type) : [...current, type]
-                  )
-                }
-              >
-                <Text style={[styles.filterChipText, active && styles.filterChipTextActive]}>
-                  {emoji} {label}
-                </Text>
-              </TouchableOpacity>
-            );
-          })}
-        </View>
-        <TouchableOpacity
-          style={[styles.toggleRow, onlyWithPreview && styles.toggleRowActive]}
-          onPress={() => setOnlyWithPreview((current) => !current)}
-        >
-          <Text style={[styles.toggleText, onlyWithPreview && styles.toggleTextActive]}>
-            {onlyWithPreview ? '✓' : '○'} Jen oblasti s ikonou
-          </Text>
-        </TouchableOpacity>
-
-        <FlatList
-          horizontal
-          data={filteredAreas}
-          keyExtractor={(item) => item.id}
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={filteredAreas.length === 0 ? styles.emptyAreasList : styles.areaList}
-          ListEmptyComponent={
-            <View style={styles.emptyCard}>
-              <Text style={styles.emptyCardTitle}>Nic neodpovídá filtru</Text>
-              <Text style={styles.emptyCardText}>Zkuste změnit typy cest nebo vypnout filtr ikon.</Text>
-            </View>
-          }
-          renderItem={({ item }) => (
-            <AreaChip
-              area={item}
-              routeCount={(selectedTypes.length > 0 ? filteredRouteCountsByAreaId : routesByAreaId).get(item.id) ?? 0}
-              onPress={() => navigation.navigate('AddArea', { areaId: item.id })}
-            />
-          )}
-        />
-      </View>
-
-      <View style={styles.section}>
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Mapa oblastí</Text>
-          <Text style={styles.sectionMeta}>Mapy.com + clustering</Text>
-        </View>
-        <MapyWebView
-          mode="browse"
-          height={300}
-          centerLatitude={mapRegion.latitude}
-          centerLongitude={mapRegion.longitude}
-          zoom={areasWithLocation.length === 0 ? 7 : 10}
-          markers={areaMarkers}
-          emptyStateTitle="Chybí Mapy.com API klíč"
-          emptyStateText="Uložte klíč do .env.local jako EXPO_PUBLIC_MAPY_API_KEY. Klíč nedávejte do repozitáře a v Mapy.com ho omezte na User-Agent a jen na potřebné služby."
-          onMarkerPress={(areaId) => navigation.navigate('AddArea', { areaId })}
-          onMapError={(message) => Alert.alert('Mapa oblastí', message)}
-        />
-        {areasWithLocation.length === 0 ? (
-          <View style={styles.mapHint}>
-            <Text style={styles.mapHintTitle}>Mapa je zatím prázdná</Text>
-            <Text style={styles.mapHintText}>
-              Otevřete oblast a klepnutím do mapy jí nastavte souřadnice.
-            </Text>
-          </View>
-        ) : null}
-        {!hasMapyApiKey() ? (
-          <View style={styles.securityHint}>
-            <Text style={styles.securityHintTitle}>Doporučené zabezpečení klíče</Text>
-            <Text style={styles.securityHintText}>
-              V administraci Mapy.com nastavte omezení podle User-Agent a povolte jen službu mapových dlaždic.
-            </Text>
-          </View>
-        ) : null}
-      </View>
-
-      <View style={styles.footerPanel}>
-        <Text style={styles.footerTitle}>Rychlý přehled</Text>
-        <Text style={styles.footerText}>
-          Oblasti s mapou: {areasWithLocation.length} / {filteredAreas.length}
-        </Text>
-        <Text style={styles.footerText}>
-          Cesty přiřazené do oblastí: {routes.filter((route) => route.area_id).length} / {routes.length}
-        </Text>
-      </View>
+      </ScrollView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#eef1eb', padding: 16 },
+  container: { flex: 1, backgroundColor: '#eef1eb' },
+  scroll: { flex: 1 },
+  scrollContent: { padding: 16, paddingBottom: 28 },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
     marginBottom: 16,
   },
   title: { fontSize: 24, fontWeight: '800', color: '#20301c' },
@@ -246,8 +248,10 @@ const styles = StyleSheet.create({
   addButton: {
     backgroundColor: '#2d5a27',
     paddingHorizontal: 14,
-    paddingVertical: 10,
+    paddingVertical: 14,
     borderRadius: 12,
+    alignItems: 'center',
+    marginTop: 14,
   },
   addButtonText: {
     color: '#fff',

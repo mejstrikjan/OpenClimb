@@ -36,15 +36,34 @@ export function AddAreaScreen() {
       return;
     }
 
-    getAreaById(areaId).then((area) => {
-      if (area) {
-        setName(area.name);
-        setPreviewUri(area.preview_uri);
-        setLatitude(area.latitude);
-        setLongitude(area.longitude);
-      }
-      setLoaded(true);
-    });
+    let cancelled = false;
+
+    getAreaById(areaId)
+      .then((area) => {
+        if (cancelled) {
+          return;
+        }
+
+        if (area) {
+          setName(area.name);
+          setPreviewUri(area.preview_uri);
+          setLatitude(area.latitude);
+          setLongitude(area.longitude);
+        }
+        setLoaded(true);
+      })
+      .catch((error) => {
+        if (cancelled) {
+          return;
+        }
+
+        setLoaded(true);
+        Alert.alert('Chyba', `Nepodařilo se načíst oblast: ${error}`);
+      });
+
+    return () => {
+      cancelled = true;
+    };
   }, [areaId]);
 
   const handleSave = async () => {
