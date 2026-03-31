@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { WebView } from 'react-native-webview';
 import { MAPY_API_KEY, MAPY_WEBVIEW_USER_AGENT, hasMapyApiKey } from '../config/mapy';
+import { colors } from '../theme/colors';
 
 type MarkerItem = {
   id: string;
@@ -90,7 +91,7 @@ export function MapyWebView({
         height: 100%;
         overflow: hidden;
         font-family: Arial, sans-serif;
-        background: #eef1eb;
+        background: ${colors.background};
       }
       .map-shell {
         position: relative;
@@ -110,7 +111,7 @@ export function MapyWebView({
         gap: 8px;
         padding: 4px 8px;
         border-radius: 10px;
-        background: rgba(255, 255, 255, 0.88);
+        background: rgba(255, 247, 238, 0.92);
         box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
       }
       .mapy-attribution img {
@@ -118,7 +119,7 @@ export function MapyWebView({
         display: block;
       }
       .mapy-attribution a {
-        color: #2c3a27;
+        color: ${colors.text};
         text-decoration: none;
         font-size: 10px;
         font-weight: 700;
@@ -131,8 +132,8 @@ export function MapyWebView({
         max-width: 220px;
         padding: 8px 10px;
         border-radius: 12px;
-        background: rgba(33, 48, 28, 0.9);
-        color: #fff;
+        background: rgba(26, 23, 33, 0.92);
+        color: ${colors.textOnDark};
         font-size: 12px;
         line-height: 1.35;
       }
@@ -147,7 +148,7 @@ export function MapyWebView({
         height: 54px;
         border-radius: 27px;
         border: 3px solid #ffffff;
-        background: linear-gradient(180deg, #dce8d5 0%, #c8dbbf 100%);
+        background: linear-gradient(180deg, ${colors.primarySoft} 0%, ${colors.accent} 100%);
         box-shadow: 0 8px 18px rgba(0, 0, 0, 0.22);
         overflow: hidden;
         display: flex;
@@ -172,36 +173,36 @@ export function MapyWebView({
         width: 22px;
         height: 22px;
         border-radius: 11px;
-        background: #2d5a27;
+        background: ${colors.primary};
         border: 3px solid #ffffff;
         box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
       }
       .popup-title {
         font-size: 14px;
         font-weight: 700;
-        color: #24331f;
+        color: ${colors.text};
       }
       .popup-subtitle {
         margin-top: 4px;
         font-size: 12px;
-        color: #586754;
+        color: ${colors.textMuted};
       }
       .popup-action {
         margin-top: 8px;
         font-size: 12px;
         font-weight: 700;
-        color: #2d5a27;
+        color: ${colors.primaryDark};
       }
       .marker-cluster-small,
       .marker-cluster-medium,
       .marker-cluster-large {
-        background: rgba(45, 90, 39, 0.16);
+        background: rgba(239, 116, 37, 0.16);
       }
       .marker-cluster-small div,
       .marker-cluster-medium div,
       .marker-cluster-large div {
-        background: #2d5a27;
-        color: #fff;
+        background: ${colors.primary};
+        color: ${colors.textOnDark};
         font-weight: 800;
       }
     </style>
@@ -394,7 +395,7 @@ export function MapyWebView({
         onTouchCancel={() => onInteractionChange?.(false)}
         renderLoading={() => (
           <View style={styles.loading}>
-            <ActivityIndicator size="small" color="#2d5a27" />
+            <ActivityIndicator size="small" color={colors.primary} />
           </View>
         )}
         onMessage={(event) => {
@@ -424,7 +425,7 @@ const styles = StyleSheet.create({
   webviewWrap: {
     borderRadius: 16,
     overflow: 'hidden',
-    backgroundColor: '#f4f7f2',
+    backgroundColor: colors.backgroundMuted,
   },
   webview: {
     flex: 1,
@@ -434,23 +435,23 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f4f7f2',
+    backgroundColor: colors.backgroundMuted,
   },
   fallback: {
     borderRadius: 16,
     padding: 16,
-    backgroundColor: '#f4f7f2',
+    backgroundColor: colors.backgroundMuted,
     justifyContent: 'center',
   },
   fallbackTitle: {
     fontSize: 15,
     fontWeight: '700',
-    color: '#24331f',
+    color: colors.text,
     marginBottom: 6,
   },
   fallbackText: {
     fontSize: 13,
-    color: '#5f6d5b',
+    color: colors.textMuted,
     lineHeight: 18,
   },
 });

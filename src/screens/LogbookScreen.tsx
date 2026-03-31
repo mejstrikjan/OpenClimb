@@ -7,6 +7,7 @@ import { getAllAscents } from '../database/ascentRepository';
 import { getRouteById } from '../database/routeRepository';
 import { AscentCard } from '../components/AscentCard';
 import type { RootStackParamList } from '../navigation/AppNavigator';
+import { colors } from '../theme/colors';
 
 interface AscentWithRoute extends Ascent {
   routeName: string;
@@ -68,11 +69,11 @@ export function LogbookScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f0f0f0' },
+  container: { flex: 1, backgroundColor: colors.background },
   list: { paddingVertical: 8 },
   emptyList: { flexGrow: 1 },
   empty: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingTop: 100 },
   emptyIcon: { fontSize: 48, marginBottom: 12 },
-  emptyText: { fontSize: 18, fontWeight: '600', color: '#999' },
-  emptySubtext: { fontSize: 14, color: '#bbb', marginTop: 4, textAlign: 'center', paddingHorizontal: 40 },
+  emptyText: { fontSize: 18, fontWeight: '600', color: colors.textMuted },
+  emptySubtext: { fontSize: 14, color: colors.textMuted, marginTop: 4, textAlign: 'center', paddingHorizontal: 40 },
 });

@@ -13,6 +13,7 @@ import { StarRating } from '../components/StarRating';
 import { AscentCard } from '../components/AscentCard';
 import { MapyWebView } from '../components/MapyWebView';
 import type { RootStackParamList } from '../navigation/AppNavigator';
+import { colors } from '../theme/colors';
 
 const TYPE_LABELS: Record<string, string> = {
   sport: '🧗 Sport',
@@ -220,53 +221,53 @@ export function RouteDetailScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f0f0f0' },
+  container: { flex: 1, backgroundColor: colors.background },
   content: { paddingBottom: 40 },
   loading: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  loadingText: { fontSize: 16, color: '#999' },
+  loadingText: { fontSize: 16, color: colors.textMuted },
   photo: { width: '100%', height: 250 },
   header: {
     flexDirection: 'row', justifyContent: 'space-between',
     alignItems: 'center', padding: 16, paddingBottom: 8,
   },
-  name: { fontSize: 22, fontWeight: '800', color: '#222', flex: 1, marginRight: 8 },
+  name: { fontSize: 22, fontWeight: '800', color: colors.text, flex: 1, marginRight: 8 },
   gradeBadge: {
-    backgroundColor: '#2d5a27', paddingHorizontal: 14, paddingVertical: 6,
+    backgroundColor: colors.primary, paddingHorizontal: 14, paddingVertical: 6,
     borderRadius: 8,
   },
-  gradeText: { color: '#fff', fontWeight: '700', fontSize: 15 },
+  gradeText: { color: colors.textOnDark, fontWeight: '700', fontSize: 15 },
   metaRow: {
     flexDirection: 'row', justifyContent: 'space-between',
     alignItems: 'center', paddingHorizontal: 16, marginBottom: 8,
   },
-  typeLabel: { fontSize: 15, color: '#666' },
+  typeLabel: { fontSize: 15, color: colors.textMuted },
   section: {
-    backgroundColor: '#fff', marginHorizontal: 16, marginTop: 12,
+    backgroundColor: colors.surface, marginHorizontal: 16, marginTop: 12,
     borderRadius: 12, padding: 16,
   },
   sectionHeader: {
     flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
     marginBottom: 8,
   },
-  sectionTitle: { fontSize: 16, fontWeight: '700', color: '#333' },
-  breadcrumb: { fontSize: 15, color: '#2d5a27', fontWeight: '500' },
-  description: { fontSize: 15, lineHeight: 22, color: '#444' },
-  coords: { fontSize: 14, color: '#2d5a27', fontFamily: 'monospace' },
+  sectionTitle: { fontSize: 16, fontWeight: '700', color: colors.text },
+  breadcrumb: { fontSize: 15, color: colors.primaryDark, fontWeight: '500' },
+  description: { fontSize: 15, lineHeight: 22, color: colors.text },
+  coords: { fontSize: 14, color: colors.primaryDark, fontFamily: 'monospace' },
   routeMapWrap: { marginTop: 12 },
-  info: { fontSize: 14, color: '#666', marginBottom: 4 },
+  info: { fontSize: 14, color: colors.textMuted, marginBottom: 4 },
   addAscentBtn: {
-    backgroundColor: '#2d5a27', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 6,
+    backgroundColor: colors.primary, paddingHorizontal: 12, paddingVertical: 6, borderRadius: 6,
   },
-  addAscentBtnText: { color: '#fff', fontSize: 12, fontWeight: '600' },
-  emptyAscents: { fontSize: 14, color: '#bbb', textAlign: 'center', paddingVertical: 12 },
+  addAscentBtnText: { color: colors.textOnDark, fontSize: 12, fontWeight: '600' },
+  emptyAscents: { fontSize: 14, color: colors.textMuted, textAlign: 'center', paddingVertical: 12 },
   editButton: {
     marginHorizontal: 16, marginTop: 24, paddingVertical: 14,
-    backgroundColor: '#2d5a27', borderRadius: 12, alignItems: 'center',
+    backgroundColor: colors.primary, borderRadius: 12, alignItems: 'center',
   },
-  editButtonText: { color: '#fff', fontSize: 16, fontWeight: '700' },
+  editButtonText: { color: colors.textOnDark, fontSize: 16, fontWeight: '700' },
   deleteButton: {
     marginHorizontal: 16, marginTop: 12, paddingVertical: 14,
-    backgroundColor: '#e74c3c', borderRadius: 12, alignItems: 'center',
+    backgroundColor: colors.danger, borderRadius: 12, alignItems: 'center',
   },
-  deleteButtonText: { color: '#fff', fontSize: 16, fontWeight: '700' },
+  deleteButtonText: { color: colors.textOnDark, fontSize: 16, fontWeight: '700' },
 });

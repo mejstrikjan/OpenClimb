@@ -1,6 +1,7 @@
 import React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Area } from '../types';
+import { colors } from '../theme/colors';
 
 interface Props {
   area: Area;
@@ -40,9 +41,9 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     overflow: 'hidden',
     marginBottom: 8,
-    backgroundColor: '#d8e7d2',
+    backgroundColor: colors.primarySoft,
     borderWidth: 2,
-    borderColor: '#fff',
+    borderColor: colors.surface,
   },
   preview: {
     width: '100%',
@@ -58,12 +59,12 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 13,
     fontWeight: '700',
-    color: '#24331f',
+    color: colors.text,
     textAlign: 'center',
   },
   meta: {
     marginTop: 2,
     fontSize: 11,
-    color: '#6d7f66',
+    color: colors.textMuted,
   },
 });

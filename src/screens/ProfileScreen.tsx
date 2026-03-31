@@ -3,6 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { getAllRoutes } from '../database/routeRepository';
 import { getAllAscents } from '../database/ascentRepository';
+import { colors } from '../theme/colors';
 
 export function ProfileScreen() {
   const [routeStats, setRouteStats] = useState({ total: 0, synced: 0, unsynced: 0 });
@@ -48,11 +49,11 @@ export function ProfileScreen() {
           <Text style={styles.statLabel}>Celkem</Text>
         </View>
         <View style={styles.statCard}>
-          <Text style={[styles.statNumber, { color: '#2d5a27' }]}>{routeStats.synced}</Text>
+          <Text style={[styles.statNumber, { color: colors.primaryDark }]}>{routeStats.synced}</Text>
           <Text style={styles.statLabel}>Synchro</Text>
         </View>
         <View style={styles.statCard}>
-          <Text style={[styles.statNumber, { color: '#e67e22' }]}>{routeStats.unsynced}</Text>
+          <Text style={[styles.statNumber, { color: colors.accent }]}>{routeStats.unsynced}</Text>
           <Text style={styles.statLabel}>Nesynchro</Text>
         </View>
       </View>
@@ -64,7 +65,7 @@ export function ProfileScreen() {
           <Text style={styles.statLabel}>Výstupů</Text>
         </View>
         <View style={styles.statCard}>
-          <Text style={[styles.statNumber, { color: '#2d5a27' }]}>{ascentStats.successRate}%</Text>
+          <Text style={[styles.statNumber, { color: colors.primaryDark }]}>{ascentStats.successRate}%</Text>
           <Text style={styles.statLabel}>Úspěšnost</Text>
         </View>
       </View>
@@ -96,36 +97,39 @@ export function ProfileScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f0f0f0', padding: 16 },
+  container: { flex: 1, backgroundColor: colors.background, padding: 16 },
   avatarContainer: { alignItems: 'center', marginTop: 12, marginBottom: 20 },
   avatar: {
     width: 72, height: 72, borderRadius: 36,
-    backgroundColor: '#e8f5e9', justifyContent: 'center',
+    backgroundColor: colors.surfaceMuted, justifyContent: 'center',
     alignItems: 'center', marginBottom: 10,
+    borderWidth: 1, borderColor: colors.border,
   },
   avatarText: { fontSize: 32 },
-  username: { fontSize: 20, fontWeight: '700', color: '#222' },
-  subtitle: { fontSize: 13, color: '#999', marginTop: 4, textAlign: 'center' },
-  sectionLabel: { fontSize: 16, fontWeight: '700', color: '#333', marginBottom: 8, marginTop: 8 },
+  username: { fontSize: 20, fontWeight: '700', color: colors.text },
+  subtitle: { fontSize: 13, color: colors.textMuted, marginTop: 4, textAlign: 'center' },
+  sectionLabel: { fontSize: 16, fontWeight: '700', color: colors.text, marginBottom: 8, marginTop: 8 },
   statsRow: { flexDirection: 'row', gap: 10, marginBottom: 16 },
   statCard: {
-    flex: 1, backgroundColor: '#fff', borderRadius: 12,
+    flex: 1, backgroundColor: colors.surface, borderRadius: 12,
     padding: 14, alignItems: 'center', elevation: 2,
-    shadowColor: '#000', shadowOffset: { width: 0, height: 1 },
+    shadowColor: colors.cardShadow, shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1, shadowRadius: 2,
+    borderWidth: 1, borderColor: colors.border,
   },
-  statNumber: { fontSize: 22, fontWeight: '800', color: '#333' },
-  statLabel: { fontSize: 11, color: '#888', marginTop: 2 },
+  statNumber: { fontSize: 22, fontWeight: '800', color: colors.text },
+  statLabel: { fontSize: 11, color: colors.textMuted, marginTop: 2 },
   styleStats: {
-    backgroundColor: '#fff', borderRadius: 12, padding: 14, elevation: 2,
-    shadowColor: '#000', shadowOffset: { width: 0, height: 1 },
+    backgroundColor: colors.surface, borderRadius: 12, padding: 14, elevation: 2,
+    shadowColor: colors.cardShadow, shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1, shadowRadius: 2,
+    borderWidth: 1, borderColor: colors.border,
   },
   styleRow: {
     flexDirection: 'row', alignItems: 'center', paddingVertical: 8,
-    borderBottomWidth: 1, borderBottomColor: '#f0f0f0',
+    borderBottomWidth: 1, borderBottomColor: colors.border,
   },
   styleIcon: { fontSize: 18, width: 30 },
-  styleLabel: { flex: 1, fontSize: 15, color: '#444' },
-  styleCount: { fontSize: 17, fontWeight: '700', color: '#333' },
+  styleLabel: { flex: 1, fontSize: 15, color: colors.text },
+  styleCount: { fontSize: 17, fontWeight: '700', color: colors.text },
 });

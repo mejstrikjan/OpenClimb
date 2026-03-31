@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ascent } from '../types';
+import { colors } from '../theme/colors';
 
 interface Props {
   ascent: Ascent;
@@ -11,10 +12,10 @@ interface Props {
 }
 
 const STYLE_LABELS: Record<string, { label: string; icon: string; color: string }> = {
-  onsight: { label: 'On-sight', icon: '👁️', color: '#8e44ad' },
-  flash: { label: 'Flash', icon: '⚡', color: '#f39c12' },
-  redpoint: { label: 'Redpoint', icon: '🔴', color: '#e74c3c' },
-  project: { label: 'Projekt', icon: '🎯', color: '#3498db' },
+  onsight: { label: 'On-sight', icon: '👁️', color: '#6E4E94' },
+  flash: { label: 'Flash', icon: '⚡', color: colors.accent },
+  redpoint: { label: 'Redpoint', icon: '🔴', color: colors.primaryDark },
+  project: { label: 'Projekt', icon: '🎯', color: '#4F6E8F' },
 };
 
 export function AscentCard({ ascent, routeName, routeGrade, onPress, onDelete }: Props) {
@@ -55,23 +56,25 @@ export function AscentCard({ ascent, routeName, routeGrade, onPress, onDelete }:
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#fff', borderRadius: 10,
+    backgroundColor: colors.surface, borderRadius: 10,
     marginHorizontal: 16, marginVertical: 4,
     padding: 12, elevation: 2,
-    shadowColor: '#000', shadowOffset: { width: 0, height: 1 },
+    shadowColor: colors.cardShadow, shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1, shadowRadius: 2,
+    borderWidth: 1,
+    borderColor: colors.border,
   },
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 },
   left: { flex: 1, marginRight: 8 },
-  date: { fontSize: 13, color: '#888' },
-  routeName: { fontSize: 15, fontWeight: '600', color: '#222', marginTop: 2 },
+  date: { fontSize: 13, color: colors.textMuted },
+  routeName: { fontSize: 15, fontWeight: '600', color: colors.text, marginTop: 2 },
   badge: {
     paddingHorizontal: 8, paddingVertical: 4, borderRadius: 6,
   },
-  badgeText: { color: '#fff', fontSize: 11, fontWeight: '600' },
+  badgeText: { color: colors.textOnDark, fontSize: 11, fontWeight: '600' },
   footer: { marginTop: 2 },
-  success: { fontSize: 13, color: '#555' },
-  notes: { fontSize: 13, color: '#888', marginTop: 4, fontStyle: 'italic' },
+  success: { fontSize: 13, color: colors.textMuted },
+  notes: { fontSize: 13, color: colors.textMuted, marginTop: 4, fontStyle: 'italic' },
   deleteBtn: { position: 'absolute', top: 8, right: 8 },
-  deleteBtnText: { fontSize: 11, color: '#e74c3c' },
+  deleteBtnText: { fontSize: 11, color: colors.danger },
 });

@@ -9,6 +9,7 @@ import { AreaChip } from '../components/AreaChip';
 import { MapyWebView } from '../components/MapyWebView';
 import type { RootStackParamList } from '../navigation/AppNavigator';
 import { hasMapyApiKey } from '../config/mapy';
+import { colors } from '../theme/colors';
 
 type Region = {
   latitude: number;
@@ -237,16 +238,16 @@ export function MapScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#eef1eb' },
+  container: { flex: 1, backgroundColor: colors.background },
   scroll: { flex: 1 },
   scrollContent: { padding: 16, paddingBottom: 28 },
   header: {
     marginBottom: 16,
   },
-  title: { fontSize: 24, fontWeight: '800', color: '#20301c' },
-  subtitle: { fontSize: 13, color: '#6d7f66', marginTop: 4 },
+  title: { fontSize: 24, fontWeight: '800', color: colors.text },
+  subtitle: { fontSize: 13, color: colors.textMuted, marginTop: 4 },
   addButton: {
-    backgroundColor: '#2d5a27',
+    backgroundColor: colors.primary,
     paddingHorizontal: 14,
     paddingVertical: 14,
     borderRadius: 12,
@@ -254,15 +255,15 @@ const styles = StyleSheet.create({
     marginTop: 14,
   },
   addButtonText: {
-    color: '#fff',
+    color: colors.textOnDark,
     fontWeight: '700',
   },
   section: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.surface,
     borderRadius: 18,
     padding: 14,
     marginBottom: 14,
-    shadowColor: '#000',
+    shadowColor: colors.cardShadow,
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.06,
     shadowRadius: 3,
@@ -277,11 +278,11 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#24331f',
+    color: colors.text,
   },
   sectionMeta: {
     fontSize: 12,
-    color: '#83917d',
+    color: colors.textMuted,
   },
   filterRow: {
     flexDirection: 'row',
@@ -293,37 +294,40 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 8,
     borderRadius: 999,
-    backgroundColor: '#edf3e8',
+    backgroundColor: colors.surfaceMuted,
+    borderWidth: 1,
+    borderColor: colors.border,
   },
   filterChipActive: {
-    backgroundColor: '#2d5a27',
+    backgroundColor: colors.surfaceDark,
+    borderColor: colors.surfaceDark,
   },
   filterChipText: {
     fontSize: 12,
     fontWeight: '700',
-    color: '#486043',
+    color: colors.textMuted,
   },
   filterChipTextActive: {
-    color: '#fff',
+    color: colors.textOnDark,
   },
   toggleRow: {
     alignSelf: 'flex-start',
     paddingHorizontal: 10,
     paddingVertical: 8,
     borderRadius: 999,
-    backgroundColor: '#fff6df',
+    backgroundColor: colors.primarySoft,
     marginBottom: 12,
   },
   toggleRowActive: {
-    backgroundColor: '#ffe7a8',
+    backgroundColor: colors.accent,
   },
   toggleText: {
     fontSize: 12,
     fontWeight: '700',
-    color: '#78631d',
+    color: colors.primaryDark,
   },
   toggleTextActive: {
-    color: '#5c490e',
+    color: colors.surfaceDark,
   },
   areaList: {
     paddingRight: 4,
@@ -334,64 +338,64 @@ const styles = StyleSheet.create({
   emptyCard: {
     borderRadius: 14,
     padding: 18,
-    backgroundColor: '#f4f7f2',
+    backgroundColor: colors.backgroundMuted,
   },
   emptyCardTitle: {
     fontSize: 15,
     fontWeight: '700',
-    color: '#24331f',
+    color: colors.text,
     marginBottom: 4,
   },
   emptyCardText: {
     fontSize: 13,
-    color: '#788775',
+    color: colors.textMuted,
   },
   mapHint: {
     marginTop: 10,
     padding: 12,
     borderRadius: 12,
-    backgroundColor: '#f4f7f2',
+    backgroundColor: colors.backgroundMuted,
   },
   mapHintTitle: {
     fontSize: 14,
     fontWeight: '700',
-    color: '#24331f',
+    color: colors.text,
     marginBottom: 2,
   },
   mapHintText: {
     fontSize: 13,
-    color: '#788775',
+    color: colors.textMuted,
   },
   securityHint: {
     marginTop: 10,
     padding: 12,
     borderRadius: 12,
-    backgroundColor: '#fff7df',
+    backgroundColor: colors.primarySoft,
   },
   securityHintTitle: {
     fontSize: 14,
     fontWeight: '700',
-    color: '#5d4a0a',
+    color: colors.primaryDark,
     marginBottom: 2,
   },
   securityHintText: {
     fontSize: 13,
-    color: '#7a651f',
+    color: colors.text,
   },
   footerPanel: {
-    backgroundColor: '#dfe8d8',
+    backgroundColor: colors.surfaceDark,
     borderRadius: 18,
     padding: 16,
   },
   footerTitle: {
     fontSize: 15,
     fontWeight: '700',
-    color: '#20301c',
+    color: colors.textOnDark,
     marginBottom: 6,
   },
   footerText: {
     fontSize: 13,
-    color: '#405039',
+    color: colors.primarySoft,
     marginBottom: 2,
   },
 });

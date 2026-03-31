@@ -3,6 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Text } from 'react-native';
+import { colors } from '../theme/colors';
 
 import { HomeScreen } from '../screens/HomeScreen';
 import { AddRouteScreen } from '../screens/AddRouteScreen';
@@ -50,10 +51,11 @@ function MainTabs() {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused }) => <TabIcon label={route.name} focused={focused} />,
-        tabBarActiveTintColor: '#2d5a27',
-        tabBarInactiveTintColor: '#999',
-        headerStyle: { backgroundColor: '#2d5a27' },
-        headerTintColor: '#fff',
+        tabBarStyle: { backgroundColor: colors.surface, borderTopColor: colors.border },
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: colors.textMuted,
+        headerStyle: { backgroundColor: colors.surfaceDark },
+        headerTintColor: colors.textOnDark,
         headerTitleStyle: { fontWeight: '700' },
       })}
     >
@@ -70,8 +72,8 @@ export function AppNavigator() {
     <NavigationContainer>
       <Stack.Navigator
         screenOptions={{
-          headerStyle: { backgroundColor: '#2d5a27' },
-          headerTintColor: '#fff',
+          headerStyle: { backgroundColor: colors.surfaceDark },
+          headerTintColor: colors.textOnDark,
           headerTitleStyle: { fontWeight: '700' },
         }}
       >

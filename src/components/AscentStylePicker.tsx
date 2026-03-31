@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { AscentStyle } from '../types';
+import { colors } from '../theme/colors';
 
 interface Props {
   value: AscentStyle;
@@ -38,15 +39,15 @@ export function AscentStylePicker({ value, onChange }: Props) {
 
 const styles = StyleSheet.create({
   container: { marginBottom: 12 },
-  label: { fontSize: 14, fontWeight: '600', color: '#333', marginBottom: 6 },
+  label: { fontSize: 14, fontWeight: '600', color: colors.text, marginBottom: 6 },
   row: { flexDirection: 'row', gap: 6 },
   chip: {
     flex: 1, paddingVertical: 10, borderRadius: 10,
-    borderWidth: 1, borderColor: '#ddd', alignItems: 'center',
-    backgroundColor: '#f9f9f9',
+    borderWidth: 1, borderColor: colors.border, alignItems: 'center',
+    backgroundColor: colors.surface,
   },
-  chipActive: { backgroundColor: '#2d5a27', borderColor: '#2d5a27' },
+  chipActive: { backgroundColor: colors.primary, borderColor: colors.primary },
   icon: { fontSize: 18, marginBottom: 2 },
-  chipText: { fontSize: 11, color: '#666' },
-  chipTextActive: { color: '#fff', fontWeight: '600' },
+  chipText: { fontSize: 11, color: colors.textMuted },
+  chipTextActive: { color: colors.textOnDark, fontWeight: '600' },
 });

@@ -4,6 +4,7 @@ import { Area, Crag, Sector } from '../types';
 import { getAllAreas, insertArea } from '../database/areaRepository';
 import { getCragsByArea, getAllCrags, insertCrag } from '../database/cragRepository';
 import { getSectorsByCrag, getSectorsByArea, getAllSectors, insertSector } from '../database/sectorRepository';
+import { colors } from '../theme/colors';
 
 interface Props {
   areaId: string | null;
@@ -223,48 +224,48 @@ export function HierarchyPicker({ areaId, cragId, sectorId, onChange }: Props) {
 
 const styles = StyleSheet.create({
   container: { marginBottom: 12 },
-  label: { fontSize: 14, fontWeight: '600', color: '#333', marginBottom: 6 },
+  label: { fontSize: 14, fontWeight: '600', color: colors.text, marginBottom: 6 },
   row: { flexDirection: 'row', alignItems: 'center', marginBottom: 6 },
   levelButton: {
     flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
-    borderWidth: 1, borderColor: '#ddd', borderRadius: 8,
-    padding: 10, backgroundColor: '#f9f9f9',
+    borderWidth: 1, borderColor: colors.border, borderRadius: 8,
+    padding: 10, backgroundColor: colors.surface,
   },
-  levelButtonActive: { borderColor: '#2d5a27', backgroundColor: '#e8f5e9' },
-  levelLabel: { fontSize: 12, color: '#888', marginRight: 8 },
-  levelValue: { fontSize: 14, color: '#333', flex: 1, textAlign: 'right' },
-  levelPlaceholder: { color: '#aaa' },
+  levelButtonActive: { borderColor: colors.primary, backgroundColor: colors.primarySoft },
+  levelLabel: { fontSize: 12, color: colors.textMuted, marginRight: 8 },
+  levelValue: { fontSize: 14, color: colors.text, flex: 1, textAlign: 'right' },
+  levelPlaceholder: { color: colors.textMuted },
   clearSmall: {
     marginLeft: 6, width: 28, height: 28, borderRadius: 14,
-    backgroundColor: '#e74c3c', justifyContent: 'center', alignItems: 'center',
+    backgroundColor: colors.danger, justifyContent: 'center', alignItems: 'center',
   },
-  clearText: { color: '#fff', fontWeight: '700', fontSize: 14 },
-  modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' },
+  clearText: { color: colors.textOnDark, fontWeight: '700', fontSize: 14 },
+  modalOverlay: { flex: 1, backgroundColor: colors.overlay, justifyContent: 'flex-end' },
   modalContent: {
-    backgroundColor: '#fff', borderTopLeftRadius: 16, borderTopRightRadius: 16,
+    backgroundColor: colors.surface, borderTopLeftRadius: 16, borderTopRightRadius: 16,
     padding: 20, maxHeight: '60%',
   },
-  modalTitle: { fontSize: 18, fontWeight: '700', marginBottom: 12, textAlign: 'center' },
+  modalTitle: { fontSize: 18, fontWeight: '700', marginBottom: 12, textAlign: 'center', color: colors.text },
   itemList: { marginBottom: 12 },
   item: {
     paddingVertical: 12, paddingHorizontal: 16,
-    borderBottomWidth: 1, borderBottomColor: '#eee',
+    borderBottomWidth: 1, borderBottomColor: colors.border,
   },
-  itemText: { fontSize: 16, color: '#333' },
-  emptyText: { fontSize: 14, color: '#bbb', textAlign: 'center', paddingVertical: 20 },
+  itemText: { fontSize: 16, color: colors.text },
+  emptyText: { fontSize: 14, color: colors.textMuted, textAlign: 'center', paddingVertical: 20 },
   newRow: { flexDirection: 'row', gap: 8, marginBottom: 12 },
   newInput: {
-    flex: 1, borderWidth: 1, borderColor: '#ddd', borderRadius: 8,
-    padding: 10, fontSize: 15,
+    flex: 1, borderWidth: 1, borderColor: colors.border, borderRadius: 8,
+    padding: 10, fontSize: 15, backgroundColor: colors.surfaceMuted, color: colors.text,
   },
   newButton: {
-    width: 44, height: 44, borderRadius: 8, backgroundColor: '#2d5a27',
+    width: 44, height: 44, borderRadius: 8, backgroundColor: colors.primary,
     justifyContent: 'center', alignItems: 'center',
   },
-  newButtonText: { color: '#fff', fontSize: 22, fontWeight: '600' },
+  newButtonText: { color: colors.textOnDark, fontSize: 22, fontWeight: '600' },
   closeButton: {
-    paddingVertical: 14, backgroundColor: '#eee',
+    paddingVertical: 14, backgroundColor: colors.surfaceMuted,
     borderRadius: 8, alignItems: 'center',
   },
-  closeButtonText: { fontSize: 16, fontWeight: '600', color: '#666' },
+  closeButtonText: { fontSize: 16, fontWeight: '600', color: colors.textMuted },
 });

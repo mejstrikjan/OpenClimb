@@ -3,6 +3,7 @@ import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import * as Location from 'expo-location';
 import { MapyWebView } from './MapyWebView';
 import { hasMapyApiKey } from '../config/mapy';
+import { colors } from '../theme/colors';
 
 interface Props {
   latitude: number | null;
@@ -121,12 +122,12 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#333',
+    color: colors.text,
     marginBottom: 4,
   },
   hint: {
     fontSize: 12,
-    color: '#7a7a7a',
+    color: colors.textMuted,
     marginBottom: 8,
   },
   actions: {
@@ -138,37 +139,37 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 12,
     borderRadius: 10,
-    backgroundColor: '#e8f1e5',
+    backgroundColor: colors.primarySoft,
     alignItems: 'center',
   },
   secondaryButtonText: {
-    color: '#2d5a27',
+    color: colors.primaryDark,
     fontWeight: '700',
   },
   clearButton: {
     paddingHorizontal: 16,
     justifyContent: 'center',
     borderRadius: 10,
-    backgroundColor: '#e74c3c',
+    backgroundColor: colors.danger,
   },
   clearButtonText: {
-    color: '#fff',
+    color: colors.textOnDark,
     fontWeight: '700',
   },
   coords: {
     marginTop: 10,
     fontSize: 13,
-    color: '#2d5a27',
+    color: colors.primaryDark,
     fontFamily: 'monospace',
   },
   empty: {
     marginTop: 10,
     fontSize: 13,
-    color: '#9a9a9a',
+    color: colors.textMuted,
   },
   securityText: {
     marginTop: 10,
     fontSize: 12,
-    color: '#8b6b18',
+    color: colors.primaryDark,
   },
 });

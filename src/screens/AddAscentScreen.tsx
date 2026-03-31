@@ -7,6 +7,7 @@ import { insertAscent, getAscentById, updateAscent } from '../database/ascentRep
 import { getRouteById } from '../database/routeRepository';
 import { AscentStylePicker } from '../components/AscentStylePicker';
 import type { RootStackParamList } from '../navigation/AppNavigator';
+import { colors } from '../theme/colors';
 
 export function AddAscentScreen() {
   const navigation = useNavigation();
@@ -69,7 +70,7 @@ export function AddAscentScreen() {
   if (!loaded) {
     return (
       <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
-        <Text style={{ fontSize: 16, color: '#999' }}>Načítání...</Text>
+        <Text style={{ fontSize: 16, color: colors.textMuted }}>Načítání...</Text>
       </View>
     );
   }
@@ -97,8 +98,8 @@ export function AddAscentScreen() {
         <Switch
           value={success}
           onValueChange={setSuccess}
-          trackColor={{ false: '#ddd', true: '#2d5a27' }}
-          thumbColor={success ? '#fff' : '#f4f3f4'}
+          trackColor={{ false: colors.border, true: colors.primary }}
+          thumbColor={success ? colors.textOnDark : colors.surface}
         />
         <Text style={styles.switchText}>{success ? '✅ Slezeno' : '🔄 Pokus'}</Text>
       </View>
@@ -128,28 +129,28 @@ export function AddAscentScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f0f0f0' },
+  container: { flex: 1, backgroundColor: colors.background },
   content: { padding: 16, paddingBottom: 40 },
   routeInfo: {
-    backgroundColor: '#e8f5e9', borderRadius: 10, padding: 12, marginBottom: 16,
+    backgroundColor: colors.surfaceMuted, borderRadius: 10, padding: 12, marginBottom: 16, borderWidth: 1, borderColor: colors.border,
   },
-  routeLabel: { fontSize: 12, color: '#888' },
-  routeName: { fontSize: 17, fontWeight: '700', color: '#2d5a27', marginTop: 2 },
-  label: { fontSize: 14, fontWeight: '600', color: '#333', marginBottom: 6 },
+  routeLabel: { fontSize: 12, color: colors.textMuted },
+  routeName: { fontSize: 17, fontWeight: '700', color: colors.primaryDark, marginTop: 2 },
+  label: { fontSize: 14, fontWeight: '600', color: colors.text, marginBottom: 6 },
   input: {
-    backgroundColor: '#fff', borderRadius: 10, paddingHorizontal: 14,
-    paddingVertical: 12, fontSize: 16, borderWidth: 1, borderColor: '#ddd',
+    backgroundColor: colors.surface, borderRadius: 10, paddingHorizontal: 14,
+    paddingVertical: 12, fontSize: 16, borderWidth: 1, borderColor: colors.border,
     marginBottom: 12,
   },
   textArea: { minHeight: 80 },
   switchRow: {
     flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 16,
   },
-  switchText: { fontSize: 14, color: '#555' },
+  switchText: { fontSize: 14, color: colors.textMuted },
   saveButton: {
-    backgroundColor: '#2d5a27', paddingVertical: 16, borderRadius: 12,
+    backgroundColor: colors.primary, paddingVertical: 16, borderRadius: 12,
     alignItems: 'center', marginTop: 12,
   },
   saveButtonDisabled: { opacity: 0.6 },
-  saveButtonText: { color: '#fff', fontSize: 17, fontWeight: '700' },
+  saveButtonText: { color: colors.textOnDark, fontSize: 17, fontWeight: '700' },
 });

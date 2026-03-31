@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Modal } from 'react-native';
 import { GradeSystem, getGradesForSystem } from '../types';
+import { colors } from '../theme/colors';
 
 interface Props {
   system: GradeSystem;
@@ -66,41 +67,42 @@ export function GradePicker({ system, grade, onSystemChange, onGradeChange }: Pr
 
 const styles = StyleSheet.create({
   container: { marginBottom: 12 },
-  label: { fontSize: 14, fontWeight: '600', color: '#333', marginBottom: 6 },
-  helperText: { fontSize: 12, color: '#777', marginBottom: 8 },
+  label: { fontSize: 14, fontWeight: '600', color: colors.text, marginBottom: 6 },
+  helperText: { fontSize: 12, color: colors.textMuted, marginBottom: 8 },
   systemRow: { flexDirection: 'row', gap: 8, marginBottom: 12 },
   systemButton: {
     flex: 1, paddingVertical: 8, borderRadius: 8,
-    borderWidth: 1, borderColor: '#ddd', alignItems: 'center',
+    borderWidth: 1, borderColor: colors.border, alignItems: 'center',
+    backgroundColor: colors.surface,
   },
-  systemButtonActive: { backgroundColor: '#2d5a27', borderColor: '#2d5a27' },
-  systemText: { fontSize: 14, color: '#666' },
-  systemTextActive: { color: '#fff', fontWeight: '600' },
+  systemButtonActive: { backgroundColor: colors.primary, borderColor: colors.primaryDark },
+  systemText: { fontSize: 14, color: colors.textMuted },
+  systemTextActive: { color: colors.textOnDark, fontWeight: '600' },
   gradeSelector: {
-    borderWidth: 1, borderColor: '#ddd', borderRadius: 8,
-    padding: 12, backgroundColor: '#f9f9f9',
+    borderWidth: 1, borderColor: colors.border, borderRadius: 8,
+    padding: 12, backgroundColor: colors.surface,
   },
-  gradeSelectorText: { fontSize: 16, color: '#333' },
+  gradeSelectorText: { fontSize: 16, color: colors.text },
   modalOverlay: {
-    flex: 1, backgroundColor: 'rgba(0,0,0,0.5)',
+    flex: 1, backgroundColor: colors.overlay,
     justifyContent: 'flex-end',
   },
   modalContent: {
-    backgroundColor: '#fff', borderTopLeftRadius: 16, borderTopRightRadius: 16,
+    backgroundColor: colors.surface, borderTopLeftRadius: 16, borderTopRightRadius: 16,
     padding: 20, maxHeight: '60%',
   },
-  modalTitle: { fontSize: 18, fontWeight: '700', marginBottom: 12, textAlign: 'center' },
+  modalTitle: { fontSize: 18, fontWeight: '700', marginBottom: 12, textAlign: 'center', color: colors.text },
   gradeList: { marginBottom: 12 },
   gradeItem: {
     paddingVertical: 12, paddingHorizontal: 16,
-    borderBottomWidth: 1, borderBottomColor: '#eee',
+    borderBottomWidth: 1, borderBottomColor: colors.border,
   },
-  gradeItemActive: { backgroundColor: '#e8f5e9' },
-  gradeItemText: { fontSize: 16, color: '#333' },
-  gradeItemTextActive: { color: '#2d5a27', fontWeight: '600' },
+  gradeItemActive: { backgroundColor: colors.surfaceMuted },
+  gradeItemText: { fontSize: 16, color: colors.text },
+  gradeItemTextActive: { color: colors.primaryDark, fontWeight: '600' },
   closeButton: {
-    paddingVertical: 14, backgroundColor: '#eee',
+    paddingVertical: 14, backgroundColor: colors.surfaceMuted,
     borderRadius: 8, alignItems: 'center',
   },
-  closeButtonText: { fontSize: 16, fontWeight: '600', color: '#666' },
+  closeButtonText: { fontSize: 16, fontWeight: '600', color: colors.textMuted },
 });

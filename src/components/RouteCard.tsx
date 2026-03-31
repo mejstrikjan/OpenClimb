@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { ClimbingRoute } from '../types';
 import { StarRating } from './StarRating';
+import { colors } from '../theme/colors';
 
 interface Props {
   route: ClimbingRoute;
@@ -43,26 +44,28 @@ export function RouteCard({ route, onPress }: Props) {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#fff', borderRadius: 12,
+    backgroundColor: colors.surface, borderRadius: 12,
     marginHorizontal: 16, marginVertical: 6,
-    shadowColor: '#000', shadowOffset: { width: 0, height: 2 },
+    shadowColor: colors.cardShadow, shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1, shadowRadius: 4, elevation: 3,
     overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: colors.border,
   },
   photo: { width: '100%', height: 140 },
   content: { padding: 12 },
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 },
-  name: { fontSize: 17, fontWeight: '700', color: '#222', flex: 1, marginRight: 8 },
+  name: { fontSize: 17, fontWeight: '700', color: colors.text, flex: 1, marginRight: 8 },
   gradeBadge: {
-    backgroundColor: '#2d5a27', paddingHorizontal: 10, paddingVertical: 4,
+    backgroundColor: colors.primary, paddingHorizontal: 10, paddingVertical: 4,
     borderRadius: 6,
   },
-  gradeText: { color: '#fff', fontWeight: '700', fontSize: 13 },
+  gradeText: { color: colors.textOnDark, fontWeight: '700', fontSize: 13 },
   meta: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 },
-  type: { fontSize: 13, color: '#888', textTransform: 'capitalize' },
-  description: { fontSize: 13, color: '#666', marginTop: 4 },
+  type: { fontSize: 13, color: colors.textMuted, textTransform: 'capitalize' },
+  description: { fontSize: 13, color: colors.textMuted, marginTop: 4 },
   unsyncedBadge: {
     marginTop: 6, alignSelf: 'flex-start', fontSize: 11,
-    color: '#e67e22', fontWeight: '600',
+    color: colors.warning, fontWeight: '600',
   },
 });

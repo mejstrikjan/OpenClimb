@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Alert, Modal } from 'react-native';
 import * as Location from 'expo-location';
+import { colors } from '../theme/colors';
 
 interface Props {
   latitude: number | null;
@@ -61,23 +62,23 @@ export function LocationPicker({ latitude, longitude, onLocationChange, onLocati
 
 const styles = StyleSheet.create({
   container: { marginBottom: 12 },
-  label: { fontSize: 14, fontWeight: '600', color: '#333', marginBottom: 6 },
+  label: { fontSize: 14, fontWeight: '600', color: colors.text, marginBottom: 6 },
   button: {
     paddingVertical: 16, borderRadius: 12,
-    borderWidth: 2, borderColor: '#ddd', borderStyle: 'dashed',
-    alignItems: 'center', justifyContent: 'center', backgroundColor: '#f9f9f9',
+    borderWidth: 2, borderColor: colors.border, borderStyle: 'dashed',
+    alignItems: 'center', justifyContent: 'center', backgroundColor: colors.surface,
   },
   buttonIcon: { fontSize: 24, marginBottom: 4 },
-  buttonText: { fontSize: 14, color: '#666' },
+  buttonText: { fontSize: 14, color: colors.textMuted },
   locationInfo: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   coordsBox: {
-    flex: 1, padding: 12, backgroundColor: '#e8f5e9',
+    flex: 1, padding: 12, backgroundColor: colors.primarySoft,
     borderRadius: 8,
   },
-  coordsText: { fontSize: 14, color: '#2d5a27', fontFamily: 'monospace' },
+  coordsText: { fontSize: 14, color: colors.primaryDark, fontFamily: 'monospace' },
   clearButton: {
     paddingVertical: 8, paddingHorizontal: 12,
-    backgroundColor: '#e74c3c', borderRadius: 8,
+    backgroundColor: colors.danger, borderRadius: 8,
   },
-  clearButtonText: { color: '#fff', fontWeight: '600', fontSize: 12 },
+  clearButtonText: { color: colors.textOnDark, fontWeight: '600', fontSize: 12 },
 });

@@ -16,6 +16,7 @@ import { PhotoPicker } from '../components/PhotoPicker';
 import { MapLocationPicker } from '../components/MapLocationPicker';
 import { getAreaById, insertArea, updateArea } from '../database/areaRepository';
 import type { RootStackParamList } from '../navigation/AppNavigator';
+import { colors } from '../theme/colors';
 
 export function AddAreaScreen() {
   const navigation = useNavigation();
@@ -160,36 +161,36 @@ export function AddAreaScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f0f0f0' },
+  container: { flex: 1, backgroundColor: colors.background },
   scroll: { flex: 1 },
   scrollContent: { padding: 16, paddingBottom: 40 },
   loading: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  loadingText: { fontSize: 16, color: '#999' },
+  loadingText: { fontSize: 16, color: colors.textMuted },
   sectionTitle: {
     fontSize: 18,
     fontWeight: '700',
-    color: '#222',
+    color: colors.text,
     marginTop: 16,
     marginBottom: 10,
   },
-  label: { fontSize: 14, fontWeight: '600', color: '#333', marginBottom: 6 },
+  label: { fontSize: 14, fontWeight: '600', color: colors.text, marginBottom: 6 },
   input: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.surface,
     borderRadius: 10,
     paddingHorizontal: 14,
     paddingVertical: 12,
     fontSize: 16,
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: colors.border,
     marginBottom: 12,
   },
   saveButton: {
-    backgroundColor: '#2d5a27',
+    backgroundColor: colors.primary,
     paddingVertical: 16,
     borderRadius: 12,
     alignItems: 'center',
     marginTop: 20,
   },
   saveButtonDisabled: { opacity: 0.6 },
-  saveButtonText: { color: '#fff', fontSize: 17, fontWeight: '700' },
+  saveButtonText: { color: colors.textOnDark, fontSize: 17, fontWeight: '700' },
 });

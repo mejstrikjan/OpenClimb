@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import { colors } from '../theme/colors';
 
 interface Props {
   photoUri: string | null;
@@ -90,20 +91,20 @@ export function PhotoPicker({
 
 const styles = StyleSheet.create({
   container: { marginBottom: 12 },
-  label: { fontSize: 14, fontWeight: '600', color: '#333', marginBottom: 6 },
+  label: { fontSize: 14, fontWeight: '600', color: colors.text, marginBottom: 6 },
   buttonRow: { flexDirection: 'row', gap: 12 },
   button: {
     flex: 1, paddingVertical: 24, borderRadius: 12,
-    borderWidth: 2, borderColor: '#ddd', borderStyle: 'dashed',
-    alignItems: 'center', justifyContent: 'center', backgroundColor: '#f9f9f9',
+    borderWidth: 2, borderColor: colors.border, borderStyle: 'dashed',
+    alignItems: 'center', justifyContent: 'center', backgroundColor: colors.surface,
   },
   buttonIcon: { fontSize: 28, marginBottom: 4 },
-  buttonText: { fontSize: 14, color: '#666' },
+  buttonText: { fontSize: 14, color: colors.textMuted },
   previewContainer: { alignItems: 'center' },
   preview: { width: '100%', height: 200, borderRadius: 12 },
   removeButton: {
     marginTop: 8, paddingVertical: 8, paddingHorizontal: 16,
-    backgroundColor: '#e74c3c', borderRadius: 8,
+    backgroundColor: colors.danger, borderRadius: 8,
   },
-  removeButtonText: { color: '#fff', fontWeight: '600' },
+  removeButtonText: { color: colors.textOnDark, fontWeight: '600' },
 });

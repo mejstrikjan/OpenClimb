@@ -8,6 +8,7 @@ import { getAllAreas } from '../database/areaRepository';
 import { RouteCard } from '../components/RouteCard';
 import { FilterSortBar } from '../components/FilterSortBar';
 import type { RootStackParamList } from '../navigation/AppNavigator';
+import { colors } from '../theme/colors';
 
 const DEFAULT_FILTER: FilterState = {
   types: [],
@@ -137,13 +138,14 @@ export function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f0f0f0' },
+  container: { flex: 1, backgroundColor: colors.background },
   searchContainer: { padding: 16, paddingBottom: 8 },
   searchInput: {
-    backgroundColor: '#fff', borderRadius: 12, paddingHorizontal: 16,
-    paddingVertical: 12, fontSize: 16, shadowColor: '#000',
+    backgroundColor: colors.surface, borderRadius: 12, paddingHorizontal: 16,
+    paddingVertical: 12, fontSize: 16, shadowColor: colors.cardShadow,
     shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.1,
     shadowRadius: 2, elevation: 2,
+    borderWidth: 1, borderColor: colors.border,
   },
   list: { paddingBottom: 80 },
   sectionHeader: {
@@ -152,33 +154,35 @@ const styles = StyleSheet.create({
     marginBottom: 2,
     paddingHorizontal: 14,
     paddingVertical: 12,
-    backgroundColor: '#dfe8d8',
+    backgroundColor: colors.surfaceMuted,
     borderRadius: 12,
+    borderWidth: 1,
+    borderColor: colors.border,
   },
   sectionTitle: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#20301c',
+    color: colors.text,
   },
   sectionMeta: {
     fontSize: 12,
-    color: '#5f7057',
+    color: colors.textMuted,
     marginTop: 2,
   },
   emptyList: { flexGrow: 1 },
   empty: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingTop: 100 },
   emptyIcon: { fontSize: 48, marginBottom: 12 },
-  emptyText: { fontSize: 18, fontWeight: '600', color: '#999' },
-  emptySubtext: { fontSize: 14, color: '#bbb', marginTop: 4 },
+  emptyText: { fontSize: 18, fontWeight: '600', color: colors.textMuted },
+  emptySubtext: { fontSize: 14, color: colors.textMuted, marginTop: 4 },
   fab: {
     position: 'absolute', bottom: 24, right: 24,
     width: 56, height: 56, borderRadius: 28,
-    backgroundColor: '#2d5a27', justifyContent: 'center',
+    backgroundColor: colors.primary, justifyContent: 'center',
     alignItems: 'center', elevation: 6,
-    shadowColor: '#000', shadowOffset: { width: 0, height: 3 },
+    shadowColor: colors.cardShadow, shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.3, shadowRadius: 4,
   },
-  fabText: { color: '#fff', fontSize: 28, fontWeight: '300', marginTop: -2 },
+  fabText: { color: colors.textOnDark, fontSize: 28, fontWeight: '300', marginTop: -2 },
 });
 
 function buildSections(
